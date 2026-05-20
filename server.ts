@@ -21,30 +21,6 @@ async function startServer() {
     next();
   };
 
-  // --- Database Seeding ---
-  const seedDB = async () => {
-    const db = await getDb();
-    const count = await db.get('SELECT COUNT(*) as c FROM users');
-    if (count.c < 5) {
-      const fakeUsers = [
-        { id: uuidv4(), username: 'Toxic_Yasuo', password: 'password', bio: 'Mid or feed. Looking for a duo to reach Challenger.', games: 'League of Legends, Valorant', playstyle: 'Tryharder', relation_mode: '🖥️ PC - Plan Cul' },
-        { id: uuidv4(), username: 'Mercy_Main_UwU', password: 'password', bio: "Pocket healer looking for a carry. Please don't be toxic!", games: 'Overwatch 2, FFXIV', playstyle: 'Support / Chill', relation_mode: '🕹️ Co-op story - Relation décontractée' },
-        { id: uuidv4(), username: 'Elden_Lord', password: 'password', bio: 'Need help with Malenia. Also looking for a long term co-op partner.', games: 'Elden Ring, Dark Souls 3', playstyle: 'Tryharder', relation_mode: '🎮 Manette à deux - Relation sérieuse' },
-        { id: uuidv4(), username: 'CSGO_Global', password: 'password', bio: "Rush B no stop.", games: 'CS2, Apex Legends', playstyle: 'Tryharder', relation_mode: "🎯 One-shot - Coup d'un soir" },
-        { id: uuidv4(), username: 'Cozy_Gamer_Girl', password: 'password', bio: 'Just want someone to build a farm with.', games: 'Stardew Valley, Animal Crossing', playstyle: 'Chill', relation_mode: '🎮 Manette à deux - Relation sérieuse' }
-      ];
-
-      for (const u of fakeUsers) {
-        await db.run(
-          'INSERT OR IGNORE INTO users (id, username, password, bio, games, playstyle, relation_mode) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          [u.id, u.username, u.password, u.bio, u.games, u.playstyle, u.relation_mode]
-        );
-      }
-      console.log('Seed: Fake users inserted');
-    }
-  };
-  await seedDB();
-
   // --- API Routes ---
   
   // Login

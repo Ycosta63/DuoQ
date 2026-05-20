@@ -41,6 +41,7 @@ export function Matches({ onSelectMatch }: MatchesProps) {
           playstyle: op?.playstyle || '',
           availabilities: op?.availabilities || '',
           relation_mode: op?.relation_mode || 'Casual',
+          questionnaire: op?.questionnaire,
           discord_username: op?.discord_username || '',
           unread: m[`unreadBy_${user.id}`] === true,
           lastMessage: m.lastMessage?.content || null,

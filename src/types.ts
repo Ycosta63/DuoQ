@@ -10,6 +10,7 @@ export interface User {
   relation_mode: string; // '🎮 Manette à deux', '🕹️ Co-op story', '🖥️ PC', '🎯 One-shot'
   discord_username?: string;
   is_premium?: number;
+  questionnaire?: Record<string, string>;
 }
 
 export interface Match {
@@ -25,6 +26,7 @@ export interface Match {
   relation_mode: string;
   discord_username?: string;
   created_at?: string;
+  questionnaire?: Record<string, string>;
 }
 
 export interface Message {

@@ -172,6 +172,34 @@ export function Chat({ match, onBack }: ChatProps) {
                 )}
               </div>
               
+              {match.questionnaire && Object.keys(match.questionnaire).length > 0 && (
+                <div className="pt-4 mt-4 border-t border-[#333]">
+                  <span className="text-[#555] block text-[10px] uppercase tracking-widest font-bold mb-3 flex items-center gap-2">
+                    <MessageSquare className="w-3 h-3" /> Questionnaire de Match
+                  </span>
+                  <div className="space-y-3">
+                    {match.questionnaire.q1 && (
+                      <div>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Plutôt tryhard en Ranked ou troll en Normal ?</span>
+                        <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q1}</p>
+                      </div>
+                    )}
+                    {match.questionnaire.q2 && (
+                      <div>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Micro actif obligatoire en game ?</span>
+                        <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q2}</p>
+                      </div>
+                    )}
+                    {match.questionnaire.q3 && (
+                      <div>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Ton meilleur souvenir gaming ?</span>
+                        <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q3}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              
               <div className="pt-4 mt-4 border-t border-[#333]">
                 <span className="text-[#555] block text-[10px] uppercase tracking-widest font-bold mb-2">Connect to Play</span>
                 <a 

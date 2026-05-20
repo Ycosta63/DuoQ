@@ -208,30 +208,6 @@ function MainApp() {
             <SettingsIcon className="w-4 h-4" /> Profil
           </button>
           
-          <div className="w-px h-6 bg-[#333] mx-2"></div>
-          
-          <button 
-            onClick={async () => {
-              const { doc, setDoc } = await import('firebase/firestore');
-              const { db } = await import('./firebase');
-              const { v4: uuidv4 } = await import('uuid');
-              const fakeUsers = [
-                { id: uuidv4(), email: 'toxic_yasuo@test.com', username: 'Toxic_Yasuo', bio: 'Mid or feed. Looking for a duo to reach Challenger.', games: 'League of Legends, Valorant', platforms: 'PC', playstyle: 'Tryharder', availabilities: 'Tous les soirs', relation_mode: '🖥️ PC' },
-                { id: uuidv4(), email: 'mercy_uwu@test.com', username: 'Mercy_Main_UwU', bio: "Pocket healer looking for a carry. Please don't be toxic!", games: 'Overwatch 2, FFXIV', platforms: 'PC, PS5', playstyle: 'Support / Chill', availabilities: 'Week-ends', relation_mode: '🕹️ Joystick' },
-                { id: uuidv4(), email: 'elden_lord@test.com', username: 'Elden_Lord', bio: 'Need help with Malenia. Also looking for a long term co-op partner.', games: 'Elden Ring, Dark Souls 3', platforms: 'PS5, Xbox Series', playstyle: 'Tryharder', availabilities: 'Après-midi', relation_mode: '🎮 Manette' },
-                { id: uuidv4(), email: 'csgo_global@test.com', username: 'CSGO_Global', bio: 'Rush B no stop.', games: 'CS2, Apex Legends', platforms: 'PC', playstyle: 'Tryharder', availabilities: 'Nuit', relation_mode: "👾 Alien Pixel" },
-                { id: uuidv4(), email: 'cozy_gamer@test.com', username: 'Cozy_Gamer_Girl', bio: 'Just want someone to build a farm with.', games: 'Stardew Valley, Animal Crossing', platforms: 'Switch, PC', playstyle: 'Chill', availabilities: 'Tous les jours', relation_mode: '🎮 Manette' }
-              ];
-              for (const fu of fakeUsers) {
-                await setDoc(doc(db, 'users', fu.id), { ...fu });
-              }
-              alert('Faux profils générés !');
-            }} 
-            className="text-[10px] uppercase font-bold tracking-widest text-[#7C3AED] hover:text-[#9D5CFF] transition-colors"
-          >
-            SEED
-          </button>
-
           <button onClick={logout} className="text-[10px] uppercase font-bold tracking-widest text-[#555] hover:text-red-500 transition-colors">
             Déconnexion
           </button>

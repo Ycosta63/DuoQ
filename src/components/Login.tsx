@@ -26,6 +26,11 @@ export function Login() {
   const [relationMode, setRelationMode] = useState(RELATION_MODES[0].id);
   const [isAdult, setIsAdult] = useState(false);
   
+  // Questionnaire elements
+  const [q1, setQ1] = useState('');
+  const [q2, setQ2] = useState('');
+  const [q3, setQ3] = useState('');
+
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +38,6 @@ export function Login() {
     setError('');
     
     if (view === 'login') {
-      // The login is usually done with email or username now. We pass username here which is typed into the "Pseudo IG / Email" field.
       const res = await login(username, password);
       if (res?.error) setError(res.error);
     } else {
@@ -48,8 +52,13 @@ export function Login() {
         }
         setStep(2);
       } else if (step === 2) {
+        setStep(3);
+      } else if (step === 3) {
         const res = await register({
-          username, email, password, bio, games, platforms, playstyle, availabilities, relation_mode: relationMode
+          username, email, password, bio, games, platforms, playstyle, availabilities, relation_mode: relationMode,
+          questionnaire: {
+            q1, q2, q3
+          }
         });
         if (res?.error) setError(res.error);
       }
@@ -155,7 +164,7 @@ export function Login() {
                   {view === 'login' ? 'Connexion' : 'Continuer'} <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-            ) : (
+            ) : step === 2 ? (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4">
                 <h2 className="text-[10px] text-[#555] uppercase tracking-[0.2em] font-bold mb-4">Configure ton profil gamer</h2>
                 
@@ -246,6 +255,60 @@ export function Login() {
                   <button 
                     type="button"
                     onClick={() => setStep(1)}
+                    className="w-1/3 bg-[#1A1A1A] border border-[#333] hover:bg-[#222] text-[#888] rounded-lg py-3 px-4 text-[10px] uppercase font-bold tracking-widest transition-all"
+                  >
+                    Retour
+                  </button>
+                  <button 
+                    type="submit"
+                    className="flex-1 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg py-3 px-4 text-[10px] uppercase font-bold tracking-widest flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                  >
+                    Continuer <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4">
+                <h2 className="text-[10px] text-[#555] uppercase tracking-[0.2em] font-bold mb-4">Questionnaire de Match</h2>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">1. Plutôt tryhard en Ranked ou troll en Normal ?</label>
+                    <input 
+                      type="text" 
+                      value={q1}
+                      onChange={(e) => setQ1(e.target.value)}
+                      placeholder="Ta réponse..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">2. Micro actif obligatoire en game ?</label>
+                    <input 
+                      type="text" 
+                      value={q2}
+                      onChange={(e) => setQ2(e.target.value)}
+                      placeholder="Ta réponse..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">3. Ton meilleur souvenir gaming ?</label>
+                    <textarea 
+                      value={q3}
+                      onChange={(e) => setQ3(e.target.value)}
+                      placeholder="Raconte-nous..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-20 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 flex gap-3">
+                  <button 
+                    type="button"
+                    onClick={() => setStep(2)}
                     className="w-1/3 bg-[#1A1A1A] border border-[#333] hover:bg-[#222] text-[#888] rounded-lg py-3 px-4 text-[10px] uppercase font-bold tracking-widest transition-all"
                   >
                     Retour
