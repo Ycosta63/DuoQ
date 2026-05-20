@@ -183,22 +183,45 @@ export function Login() {
                     <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Jeux favoris</label>
                     <input 
                       type="text" 
+                      list="games-list"
                       value={games}
                       onChange={(e) => setGames(e.target.value)}
                       placeholder="Ex: Valorant, LoL, Elden Ring"
                       className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
                     />
+                    <datalist id="games-list">
+                      <option value="League of Legends" />
+                      <option value="Valorant" />
+                      <option value="Overwatch 2" />
+                      <option value="Elden Ring" />
+                      <option value="CS2" />
+                      <option value="Apex Legends" />
+                      <option value="Minecraft" />
+                      <option value="Fortnite" />
+                      <option value="World of Warcraft" />
+                      <option value="Rocket League" />
+                    </datalist>
                   </div>
                   
                   <div className="col-span-2">
                     <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Plateformes</label>
                     <input 
                       type="text" 
+                      list="platforms-list"
                       value={platforms}
                       onChange={(e) => setPlatforms(e.target.value)}
                       placeholder="Ex: PC, PS5, Xbox Series, Switch"
                       className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
                     />
+                    <datalist id="platforms-list">
+                      <option value="PC" />
+                      <option value="PS5" />
+                      <option value="PS4" />
+                      <option value="Xbox Series X/S" />
+                      <option value="Xbox One" />
+                      <option value="Nintendo Switch" />
+                      <option value="Mobile" />
+                    </datalist>
                   </div>
 
                   <div>
@@ -273,34 +296,32 @@ export function Login() {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">1. Plutôt tryhard en Ranked ou troll en Normal ?</label>
-                    <input 
-                      type="text" 
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">1. Quel type de coéquipier es-tu in-game ?</label>
+                    <textarea 
                       value={q1}
                       onChange={(e) => setQ1(e.target.value)}
-                      placeholder="Ta réponse..."
-                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                      placeholder="Leader, chill, support..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-16 text-sm"
                     />
                   </div>
                   
                   <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">2. Micro actif obligatoire en game ?</label>
-                    <input 
-                      type="text" 
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">2. Ta réaction quand un mate feed ?</label>
+                    <textarea 
                       value={q2}
                       onChange={(e) => setQ2(e.target.value)}
-                      placeholder="Ta réponse..."
-                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                      placeholder="Je l'insulte (non je rigole), je l'encourage..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-16 text-sm"
                     />
                   </div>
                   
                   <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">3. Ton meilleur souvenir gaming ?</label>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">3. Que cherches-tu idéalement chez ton/ta Duo ?</label>
                     <textarea 
                       value={q3}
                       onChange={(e) => setQ3(e.target.value)}
-                      placeholder="Raconte-nous..."
-                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-20 text-sm"
+                      placeholder="De la bonne humeur, du niveau, quelqu'un qui carry..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-16 text-sm"
                     />
                   </div>
                 </div>

@@ -180,19 +180,19 @@ export function Chat({ match, onBack }: ChatProps) {
                   <div className="space-y-3">
                     {match.questionnaire.q1 && (
                       <div>
-                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Plutôt tryhard en Ranked ou troll en Normal ?</span>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Quel type de coéquipier es-tu in-game ?</span>
                         <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q1}</p>
                       </div>
                     )}
                     {match.questionnaire.q2 && (
                       <div>
-                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Micro actif obligatoire en game ?</span>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Ta réaction quand un mate feed ?</span>
                         <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q2}</p>
                       </div>
                     )}
                     {match.questionnaire.q3 && (
                       <div>
-                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Ton meilleur souvenir gaming ?</span>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Que cherches-tu idéalement chez ton/ta Duo ?</span>
                         <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q3}</p>
                       </div>
                     )}
