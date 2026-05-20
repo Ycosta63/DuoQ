@@ -125,7 +125,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         availabilities: data.availabilities || '',
         discord_username: data.discord_username || '',
         relation_mode: data.relation_mode || 'Casual',
-        questionnaire: data.questionnaire || {}
+        questionnaire: data.questionnaire || {},
+        gender: data.gender || '',
+        avatar_url: data.avatar_url || ''
       };
 
       await setDoc(doc(db, 'users', newId), newUser);

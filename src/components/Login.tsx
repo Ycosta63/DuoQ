@@ -25,6 +25,8 @@ export function Login() {
   const [availabilities, setAvailabilities] = useState('');
   const [relationMode, setRelationMode] = useState(RELATION_MODES[0].id);
   const [isAdult, setIsAdult] = useState(false);
+  const [gender, setGender] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
   
   // Questionnaire elements
   const [q1, setQ1] = useState('');
@@ -58,6 +60,7 @@ export function Login() {
       } else if (step === 3) {
         const res = await register({
           username, email, password, bio, games, platforms, playstyle, availabilities, relation_mode: relationMode,
+          gender, avatar_url: avatarUrl,
           questionnaire: {
             q1, q2, q3, q4, q5
           }
@@ -171,6 +174,28 @@ export function Login() {
                 <h2 className="text-[10px] text-[#555] uppercase tracking-[0.2em] font-bold mb-4">Configure ton profil gamer</h2>
                 
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2">
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Avatar (URL de l'image ou PP Discord)</label>
+                    <input 
+                      type="url" 
+                      value={avatarUrl}
+                      onChange={(e) => setAvatarUrl(e.target.value)}
+                      placeholder="https://... (Lien vers une image ou avatar Discord)"
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Genre / Pronoms</label>
+                    <input 
+                      type="text" 
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      placeholder="Ex: Homme, Femme, Non-binaire, Il/Lui, Elle, etc."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                    />
+                  </div>
+
                   <div className="col-span-2">
                     <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Bio</label>
                     <textarea 

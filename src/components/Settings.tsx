@@ -23,6 +23,8 @@ export function Settings({ onBack }: SettingsProps) {
   const [availabilities, setAvailabilities] = useState(user?.availabilities || '');
   const [discordUsername, setDiscordUsername] = useState(user?.discord_username || '');
   const [relationMode, setRelationMode] = useState(user?.relation_mode || RELATION_MODES[0].id);
+  const [gender, setGender] = useState(user?.gender || '');
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || '');
   
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
@@ -31,7 +33,7 @@ export function Settings({ onBack }: SettingsProps) {
     e.preventDefault();
     setSaving(true);
     setMsg('');
-    const res = await updateProfile({ bio, games, platforms, playstyle, availabilities, discord_username: discordUsername, relation_mode: relationMode });
+    const res = await updateProfile({ bio, games, platforms, playstyle, availabilities, discord_username: discordUsername, relation_mode: relationMode, gender, avatar_url: avatarUrl });
     setSaving(false);
     if (res.error) {
       setMsg(res.error);
@@ -97,6 +99,28 @@ export function Settings({ onBack }: SettingsProps) {
 
         <form onSubmit={handleSave} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Avatar (URL de l'image ou PP Discord)</label>
+              <input 
+                type="url" 
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                placeholder="https://... (Lien vers une image ou avatar Discord)"
+                className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Genre / Pronoms</label>
+              <input 
+                type="text" 
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                placeholder="Ex: Homme, Femme, Non-binaire, Il/Lui, Elle, etc."
+                className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+              />
+            </div>
+
             <div className="col-span-2">
               <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">Bio</label>
               <textarea 

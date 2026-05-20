@@ -11,6 +11,8 @@ export interface User {
   discord_username?: string;
   is_premium?: number;
   questionnaire?: Record<string, string>;
+  gender?: string;
+  avatar_url?: string;
 }
 
 export interface Match {
@@ -27,6 +29,8 @@ export interface Match {
   discord_username?: string;
   created_at?: string;
   questionnaire?: Record<string, string>;
+  gender?: string;
+  avatar_url?: string;
 }
 
 export interface Message {
