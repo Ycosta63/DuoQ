@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'username', 'bio', 'games', 'playstyle', 'relation_mode'])
+        && data.id is string
+        && data.username is string && data.username.size() >= 1 && data.username.size() <= 50
+        && data.bio is string && data.bio.size() <= 500
+        && data.games is string && data.games.size() <= 200
+        && data.playstyle is string && data.playstyle.size() <= 100
+        && data.relation_mode is string && data.relation_mode.size() <= 100;
+    }
+
+    match /users/{userId} {
+      allow read: if true; 
+      allow create: if isValidUser(incoming());
+      allow update: if isValidUser(incoming());
+    }
+
+    function isValidSwipe(data) {
+      return data.keys().hasAll(['id', 'fromUserId', 'toUserId', 'action', 'createdAt'])
+        && data.id is string
+        && data.fromUserId is string
+        && data.toUserId is string
+        && data.action is string && data.action in ['GG', 'FF', 'GOAT']
+        && data.createdAt is number;
+    }
+
+    match /swipes/{swipeId} {
+      allow read: if true;
+      allow create: if isValidSwipe(incoming());
+    }
+
+    function isValidMatch(data) {
+      return data.keys().hasAll(['id', 'user1Id', 'user2Id', 'createdAt'])
+        && data.id is string
+        && data.user1Id is string
+        && data.user2Id is string
+        && data.createdAt is number;
+    }
+
+    match /matches/{matchId} {
+      allow read: if true;
+      allow create: if isValidMatch(incoming())
+                    && (incoming().user1Id != incoming().user2Id); // basic sanity check
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['id', 'matchId', 'senderId', 'content', 'createdAt'])
+        && data.id is string
+        && data.matchId is string
+        && data.senderId is string
+        && data.content is string && data.content.size() > 0 && data.content.size() <= 1000
+        && data.createdAt is number;
+    }
+
+    match /matches/{matchId}/messages/{messageId} {
+      allow read: if true;
+      allow create: if isValidMessage(incoming());
+    }
+  }
+}

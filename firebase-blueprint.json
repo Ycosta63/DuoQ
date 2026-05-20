@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information including game preferences",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "username": { "type": "string" },
+        "password": { "type": "string" },
+        "bio": { "type": "string" },
+        "games": { "type": "string" },
+        "playstyle": { "type": "string" },
+        "relation_mode": { "type": "string" }
+      },
+      "required": ["id", "username", "password", "relation_mode"]
+    },
+    "Swipe": {
+      "title": "Swipe",
+      "description": "A swipe action from one user to another",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fromUserId": { "type": "string" },
+        "toUserId": { "type": "string" },
+        "action": { "type": "string", "enum": ["GG", "FF", "GOAT"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "fromUserId", "toUserId", "action", "createdAt"]
+    },
+    "Match": {
+      "title": "Match",
+      "description": "A match between two users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user1Id": { "type": "string" },
+        "user2Id": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "user1Id", "user2Id", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A chat message within a match lobby",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "matchId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "matchId", "senderId", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Player profiles"
+    },
+    "/swipes/{swipeId}": {
+      "schema": { "$ref": "#/entities/Swipe" },
+      "description": "Swipes history"
+    },
+    "/matches/{matchId}": {
+      "schema": { "$ref": "#/entities/Match" },
+      "description": "Matches between players"
+    },
+    "/matches/{matchId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Messages for a specific match"
+    }
+  }
+}
