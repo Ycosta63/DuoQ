@@ -70,7 +70,7 @@ export function Matches({ onSelectMatch }: MatchesProps) {
 
   if (matches.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-[#0A0A0A]">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center mix-blend-screen">
         <div className="w-16 h-16 bg-[#0E0E0E] rounded-full flex items-center justify-center mb-4 border border-[#2A2A2A]">
           <Gamepad2 className="w-6 h-6 text-[#555]" />
         </div>
@@ -83,7 +83,7 @@ export function Matches({ onSelectMatch }: MatchesProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col p-8 animate-in fade-in bg-[#0A0A0A]">
+    <div className="flex-1 flex flex-col p-8 animate-in fade-in">
       <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white mb-8 border-b-2 border-[#2A2A2A] pb-2">Lobbies</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

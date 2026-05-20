@@ -127,7 +127,7 @@ export function Discover() {
 
   if (matchAlert) {
     return (
-      <div className="absolute inset-0 z-50 bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-300">
+      <div className="absolute inset-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-300">
         <div className="w-24 h-24 bg-[#7C3AED]/20 rounded-full flex items-center justify-center mb-6">
           <Gamepad2 className="w-12 h-12 text-[#7C3AED]" />
         </div>
@@ -147,7 +147,7 @@ export function Discover() {
 
   if (!currentProfile) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center text-center p-6 bg-[#0A0A0A]">
+      <div className="flex-1 flex flex-col items-center justify-center text-center p-6 mix-blend-screen">
         <div className="w-16 h-16 bg-[#0E0E0E] rounded-full flex items-center justify-center mb-4 border border-[#2A2A2A]">
           <Gamepad2 className="w-6 h-6 text-[#555]" />
         </div>
@@ -161,7 +161,7 @@ export function Discover() {
   const modeIcon = currentProfile.relation_mode.split(' ')[0];
 
   return (
-    <section className="flex-1 relative flex flex-col items-center justify-center p-6 bg-[radial-gradient(circle_at_center,_#1a102e_0%,_#0a0a0a_70%)] overflow-hidden">
+    <section className="flex-1 relative flex flex-col items-center justify-center p-6 overflow-hidden">
       <div className={`relative w-full max-w-2xl max-h-[75vh] aspect-[4/5] bg-[#111] rounded-3xl overflow-hidden border border-[#333] shadow-2xl flex flex-col transition-transform duration-300 ${swiping ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
         
         {/* Profile Image Placeholder */}
@@ -182,7 +182,7 @@ export function Discover() {
              <div className="flex flex-col items-end gap-2">
                 <div className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center gap-2">
                   <span className="text-xl">{modeIcon}</span>
-                  <span className="text-xs font-bold uppercase tracking-widest leading-none text-white">{currentProfile.relation_mode.split(' - ').pop()?.replace(/[^a-zA-Z]/g, '').trim()}</span>
+                  <span className="text-xs font-bold uppercase tracking-widest leading-none text-white">{currentProfile.relation_mode.substring(currentProfile.relation_mode.indexOf(' ') + 1)}</span>
                 </div>
              </div>
           </div>

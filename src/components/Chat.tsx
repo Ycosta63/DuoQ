@@ -17,6 +17,8 @@ export function Chat({ match, onBack }: ChatProps) {
   const [showProfile, setShowProfile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     
@@ -68,7 +70,7 @@ export function Chat({ match, onBack }: ChatProps) {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#0A0A0A] absolute inset-0 animate-in slide-in-from-right-8 duration-300">
+    <div className="flex-1 flex flex-col h-full absolute inset-0 animate-in slide-in-from-right-8 duration-300">
       <header className="px-4 py-3 border-b border-[#2A2A2A] bg-[#0E0E0E] flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
           <button 
@@ -137,11 +139,12 @@ export function Chat({ match, onBack }: ChatProps) {
                       <button 
                         onClick={() => {
                           navigator.clipboard.writeText(match.discord_username!);
-                          alert('Tag Discord copié !');
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 2000);
                         }}
-                        className="text-xs bg-[#5865F2] text-white px-2 py-1 rounded font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
+                        className={`text-xs text-white px-3 py-1.5 rounded font-bold uppercase tracking-wider transition-all ${copied ? 'bg-green-500 opacity-100' : 'bg-[#5865F2] opacity-0 group-hover:opacity-100'}`}
                       >
-                        Copier
+                        {copied ? 'Copié !' : 'Copier'}
                       </button>
                     </p>
                   </div>
@@ -150,13 +153,15 @@ export function Chat({ match, onBack }: ChatProps) {
               
               <div className="pt-4 mt-4 border-t border-[#333]">
                 <span className="text-[#555] block text-[10px] uppercase tracking-widest font-bold mb-2">Connect to Play</span>
-                <button 
+                <a 
+                  href="https://discord.com/app"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg py-3 px-4 font-bold flex items-center justify-center gap-2 transition-colors text-[10px] uppercase tracking-widest"
-                  onClick={() => alert('Intégration Discord lobby (Mock)')}
                 >
                   <MessageSquare className="w-4 h-4" />
-                  Rejoindre un lobby Discord
-                </button>
+                  Ouvrir Discord
+                </a>
               </div>
             </div>
           </div>

@@ -185,6 +185,74 @@ async function startServer() {
   });
 
 
+  // --- Global Discord OAuth Routes ---
+  app.get('/api/auth/discord/url', (req, res) => {
+    const redirectUri = req.query.redirectUri as string;
+    
+    if (!process.env.DISCORD_CLIENT_ID) {
+      return res.status(500).json({ error: 'Discord credentials missing' });
+    }
+
+    const params = new URLSearchParams({
+      client_id: process.env.DISCORD_CLIENT_ID,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'identify',
+      state: redirectUri // pass it back to know where to redirect for token
+    });
+
+    res.json({ url: `https://discord.com/api/oauth2/authorize?${params}` });
+  });
+
+  app.get('/auth/callback', async (req, res) => {
+    const { code, state: redirectUri } = req.query;
+    if (!code || !redirectUri) return res.send('Missing parameters');
+
+    try {
+      const body = new URLSearchParams({
+        client_id: process.env.DISCORD_CLIENT_ID || '',
+        client_secret: process.env.DISCORD_CLIENT_SECRET || '',
+        grant_type: 'authorization_code',
+        code: code as string,
+        redirect_uri: redirectUri as string
+      });
+
+      const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body
+      });
+      
+      const tokenData = await tokenRes.json();
+      if (!tokenData.access_token) {
+        throw new Error(tokenData.error_description || 'Failed to get token');
+      }
+
+      const userRes = await fetch('https://discord.com/api/users/@me', {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` }
+      });
+      const userData = await userRes.json();
+      
+      const discordUsername = userData.discriminator && userData.discriminator !== '0' 
+        ? `${userData.username}#${userData.discriminator}` 
+        : userData.username;
+
+      res.send(`
+        <html><body><script>
+          if (window.opener) {
+            window.opener.postMessage({ type: 'DISCORD_AUTH_SUCCESS', discord_username: '${discordUsername}' }, '*');
+            window.close();
+          } else {
+            window.location.href = '/';
+          }
+        </script><p>Succès ! Vous pouvez fermer cette fenêtre.</p></body></html>
+      `);
+    } catch (e) {
+      console.error(e);
+      res.send('Erreur lors de la connexion à Discord.');
+    }
+  });
+
   // --- Vite Middleware ---
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

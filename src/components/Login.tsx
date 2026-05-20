@@ -57,7 +57,8 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#1a102e_0%,_#0a0a0a_100%)] flex flex-col items-center justify-center p-4 relative">
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none mix-blend-overlay"></div>
       <div className="w-full max-w-md bg-[#0E0E0E] border border-[#2A2A2A] rounded-3xl p-8 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
           <Gamepad2 className="w-64 h-64 text-[#7C3AED] transform rotate-12" />

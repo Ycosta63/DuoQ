@@ -22,7 +22,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F0F0F0] flex flex-col font-sans selection:bg-[#7C3AED]/30">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#1a102e_0%,_#0a0a0a_80%)] text-[#F0F0F0] flex flex-col font-sans selection:bg-[#7C3AED]/30">
       <header className="px-8 h-20 flex items-center justify-between border-b border-[#2A2A2A] bg-[#0E0E0E] sticky top-0 z-10 transition-colors">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-[#7C3AED] rounded flex items-center justify-center font-black text-2xl text-white">Q</div>
