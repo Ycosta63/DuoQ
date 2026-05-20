@@ -196,6 +196,18 @@ export function Chat({ match, onBack }: ChatProps) {
                         <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q3}</p>
                       </div>
                     )}
+                    {match.questionnaire.q4 && (
+                      <div>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Plutôt vocal h24 ou sans micro / ping uniquement ?</span>
+                        <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q4}</p>
+                      </div>
+                    )}
+                    {match.questionnaire.q5 && (
+                      <div>
+                        <span className="text-[#888] block text-[10px] italic mb-1">Q: Ton moment préféré ou plus grand accomplissement gaming ?</span>
+                        <p className="text-white text-sm bg-[#1A1A1A] p-2 rounded-lg border border-[#333]">{match.questionnaire.q5}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

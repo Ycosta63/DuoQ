@@ -30,6 +30,8 @@ export function Login() {
   const [q1, setQ1] = useState('');
   const [q2, setQ2] = useState('');
   const [q3, setQ3] = useState('');
+  const [q4, setQ4] = useState('');
+  const [q5, setQ5] = useState('');
 
   const [error, setError] = useState('');
 
@@ -57,7 +59,7 @@ export function Login() {
         const res = await register({
           username, email, password, bio, games, platforms, playstyle, availabilities, relation_mode: relationMode,
           questionnaire: {
-            q1, q2, q3
+            q1, q2, q3, q4, q5
           }
         });
         if (res?.error) setError(res.error);
@@ -294,7 +296,7 @@ export function Login() {
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4">
                 <h2 className="text-[10px] text-[#555] uppercase tracking-[0.2em] font-bold mb-4">Questionnaire de Match</h2>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                   <div>
                     <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">1. Quel type de coéquipier es-tu in-game ?</label>
                     <textarea 
@@ -321,6 +323,26 @@ export function Login() {
                       value={q3}
                       onChange={(e) => setQ3(e.target.value)}
                       placeholder="De la bonne humeur, du niveau, quelqu'un qui carry..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-16 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">4. Plutôt vocal h24 ou full sans micro ?</label>
+                    <textarea 
+                      value={q4}
+                      onChange={(e) => setQ4(e.target.value)}
+                      placeholder="Discord obligatoire, chill en musique, ping seulement..."
+                      className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-16 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">5. Ton moment préféré / plus grand exploit ?</label>
+                    <textarea 
+                      value={q5}
+                      onChange={(e) => setQ5(e.target.value)}
+                      placeholder="Avoir atteint le rang Master, finir un jeu souls-like, une soirée inoubliable..."
                       className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] resize-none h-16 text-sm"
                     />
                   </div>
