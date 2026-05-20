@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Match, Message } from '../types';
 import { ArrowLeft, Send, Gamepad2, Info, MessageSquare } from 'lucide-react';
-import { collection, query, orderBy, onSnapshot, setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, setDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 interface ChatProps {
@@ -21,6 +21,13 @@ export function Chat({ match, onBack }: ChatProps) {
 
   useEffect(() => {
     if (!user) return;
+    
+    // Clear unread flag when viewing
+    try {
+      updateDoc(doc(db, 'matches', match.match_id), {
+        [`unreadBy_${user.id}`]: false
+      });
+    } catch(e) {}
     
     const messagesRef = collection(db, 'matches', match.match_id, 'messages');
     const q = query(messagesRef, orderBy('createdAt', 'asc'));
@@ -64,6 +71,20 @@ export function Chat({ match, onBack }: ChatProps) {
         content,
         createdAt: Date.now()
       });
+      
+      const opponentId = match.user_id;
+      try {
+        await updateDoc(doc(db, 'matches', match.match_id), {
+          lastMessage: {
+            content,
+            senderId: user.id,
+            createdAt: Date.now()
+          },
+          [`unreadBy_${opponentId}`]: true
+        });
+      } catch (e) {
+        console.error(e);
+      }
     } catch(e) {
       console.error("Error sending message:", e);
     }

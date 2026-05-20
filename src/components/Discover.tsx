@@ -10,7 +10,6 @@ export function Discover() {
   const [profiles, setProfiles] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [swiping, setSwiping] = useState(false);
-  const [matchAlert, setMatchAlert] = useState<MatchType | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -67,7 +66,6 @@ export function Discover() {
       });
 
       let isMatch = false;
-      let newMatch: MatchType | null = null;
 
       // Check if it's a GG or GOAT and see if the other user also GG/GOAT me
       if (type === 'GG' || type === 'GOAT') {
@@ -89,20 +87,6 @@ export function Discover() {
               user2Id: currentProfile.id,
               createdAt: Date.now()
             });
-            
-            newMatch = {
-              match_id: matchId,
-              user_id: currentProfile.id,
-              username: currentProfile.username,
-              games: currentProfile.games,
-              platforms: currentProfile.platforms,
-              playstyle: currentProfile.playstyle,
-              availabilities: currentProfile.availabilities,
-              discord_username: currentProfile.discord_username,
-              bio: currentProfile.bio,
-              relation_mode: currentProfile.relation_mode,
-              created_at: new Date().toISOString()
-            };
           }
         }
       }
@@ -110,9 +94,6 @@ export function Discover() {
       setTimeout(() => {
         setProfiles(prev => prev.slice(1));
         setSwiping(false);
-        if (isMatch && newMatch) {
-          setMatchAlert(newMatch);
-        }
       }, 300);
       
     } catch (e) {
@@ -123,26 +104,6 @@ export function Discover() {
 
   if (loading) {
     return <div className="flex-1 flex items-center justify-center"><div className="w-8 h-8 border-4 border-fuchsia-500 border-t-transparent rounded-full animate-spin"></div></div>;
-  }
-
-  if (matchAlert) {
-    return (
-      <div className="absolute inset-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-300">
-        <div className="w-24 h-24 bg-[#7C3AED]/20 rounded-full flex items-center justify-center mb-6">
-          <Gamepad2 className="w-12 h-12 text-[#7C3AED]" />
-        </div>
-        <h2 className="text-4xl font-black italic tracking-tighter uppercase text-white mb-2">IT'S A MATCH!</h2>
-        <p className="text-[#888] mb-8 max-w-sm text-sm">
-          Vous et {matchAlert.username} avez GG mutuellement. Vous pouvez maintenant voir le profil complet et commencer à discuter.
-        </p>
-        <button 
-          onClick={() => setMatchAlert(null)}
-          className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-lg py-3 px-8 text-[10px] uppercase font-bold tracking-widest transition-all"
-        >
-          Continuer à découvrir
-        </button>
-      </div>
-    );
   }
 
   if (!currentProfile) {

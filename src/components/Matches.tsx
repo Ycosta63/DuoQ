@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Match, User } from '../types';
-import { Gamepad2, AlertCircle } from 'lucide-react';
-import { collection, query, getDocs, getDoc, doc } from 'firebase/firestore';
+import { Gamepad2 } from 'lucide-react';
+import { collection, query, or, where, onSnapshot, getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 interface MatchesProps {
@@ -11,38 +11,28 @@ interface MatchesProps {
 
 export function Matches({ onSelectMatch }: MatchesProps) {
   const { user } = useAuth();
-  const [matches, setMatches] = useState<Match[]>([]);
+  const [matches, setMatches] = useState<(Match & { unread?: boolean, lastMessage?: string | null })[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      fetchMatches();
-    }
-  }, [user]);
+    if (!user) return;
 
-  const fetchMatches = async () => {
-    try {
-      // Due to indexes, it's easier to fetch all matches and filter for prototype, 
-      // or we can do 2 queries (user1Id == me, user2Id == me).
-      const matchesRef = collection(db, 'matches');
-      const allMatches = await getDocs(matchesRef);
-      
+    const matchesRef = collection(db, 'matches');
+    const q = query(matchesRef, or(where('user1Id', '==', user.id), where('user2Id', '==', user.id)));
+
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const myMatches: any[] = [];
-      allMatches.docs.forEach(doc => {
-        const data = doc.data();
-        if (data.user1Id === user!.id || data.user2Id === user!.id) {
-          myMatches.push(data);
-        }
+      snapshot.forEach(d => {
+        myMatches.push({ _internalId: d.id, ...d.data() });
       });
-      
-      // Populate opponent detail
+
       const populated = await Promise.all(myMatches.map(async (m) => {
-        const opponentId = m.user1Id === user!.id ? m.user2Id : m.user1Id;
+        const opponentId = m.user1Id === user.id ? m.user2Id : m.user1Id;
         const opDoc = await getDoc(doc(db, 'users', opponentId));
         const op = opDoc.exists() ? (opDoc.data() as User) : null;
         
         return {
-          match_id: m.id,
+          match_id: m._internalId,
           user_id: opponentId,
           username: op?.username || 'Unknown',
           bio: op?.bio || '',
@@ -52,17 +42,21 @@ export function Matches({ onSelectMatch }: MatchesProps) {
           availabilities: op?.availabilities || '',
           relation_mode: op?.relation_mode || 'Casual',
           discord_username: op?.discord_username || '',
+          unread: m[`unreadBy_${user.id}`] === true,
+          lastMessage: m.lastMessage?.content || null,
           created_at: new Date(m.createdAt).toISOString()
-        } as Match;
+        } as Match & { unread?: boolean; lastMessage?: string | null };
       }));
-      
+
+      // Sort by newest activity roughly
+      populated.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
       setMatches(populated);
-    } catch(e) {
-      console.error(e);
-    } finally {
       setLoading(false);
-    }
-  };
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   if (loading) {
     return <div className="flex-1 flex items-center justify-center p-6"><div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div></div>;
@@ -91,14 +85,21 @@ export function Matches({ onSelectMatch }: MatchesProps) {
           <button 
             key={match.match_id}
             onClick={() => onSelectMatch(match)}
-            className="flex items-center text-left bg-[#0E0E0E] border border-[#2A2A2A] rounded-xl p-4 hover:border-[#7C3AED] hover:bg-[#1A1A1A] transition-all group"
+            className="flex items-center text-left bg-[#0E0E0E] border border-[#2A2A2A] rounded-xl p-4 hover:border-[#7C3AED] hover:bg-[#1A1A1A] transition-all group relative overflow-hidden"
           >
+            {match.unread && (
+              <div className="absolute top-4 right-4 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+            )}
             <div className="w-14 h-14 bg-[#1A1A1A] border border-[#333] rounded-full flex items-center justify-center mr-4 text-2xl group-hover:scale-110 transition-transform">
               {match.relation_mode.split(' ')[0]}
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-black italic uppercase tracking-tighter text-white truncate">{match.username}</h3>
-              <p className="text-[10px] text-[#888] uppercase font-bold tracking-widest truncate mt-1">{match.games || 'Gamer'}</p>
+            <div className="flex-1 min-w-0 pr-4">
+              <h3 className={`text-xl font-black italic uppercase tracking-tighter truncate ${match.unread ? 'text-white' : 'text-[#DDD]'}`}>{match.username}</h3>
+              {match.lastMessage ? (
+                <p className={`text-xs truncate mt-0.5 ${match.unread ? 'text-white font-medium' : 'text-[#888]'}`}>{match.lastMessage}</p>
+              ) : (
+                <p className="text-[10px] text-[#888] uppercase font-bold tracking-widest truncate mt-1">{match.games || 'Gamer'}</p>
+              )}
             </div>
           </button>
         ))}

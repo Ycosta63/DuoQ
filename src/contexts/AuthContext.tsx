@@ -3,6 +3,7 @@ import { User } from './types';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcryptjs';
 
 interface AuthContextType {
   user: User | null;
@@ -56,7 +57,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
-        if (userData.password === password) {
+        // Fallback for existing unhashed passwords (in a real app, force reset, but here we can just do a basic check or just use bcrypt.compareSync)
+        let isValid = false;
+        try {
+          isValid = bcrypt.compareSync(password || '', userData.password || '');
+        } catch(e) {
+          // Ignore
+        }
+        
+        // Fallback for existing plaintext accounts
+        if (!isValid && userData.password === password) {
+          isValid = true;
+        }
+
+        if (isValid) {
           const u = { id: userDoc.id, ...userData } as User;
           setUser(u);
           localStorage.setItem('duoq_user_id', u.id);
@@ -95,12 +109,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: 'Cet email est déjà utilisé.' };
       }
 
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(data.password, salt);
+
       const newId = uuidv4();
       const newUser: any = {
         id: newId,
         email: data.email,
         username: data.username,
-        password: data.password,
+        password: hashedPassword,
         bio: data.bio || '',
         games: data.games || '',
         platforms: data.platforms || '',

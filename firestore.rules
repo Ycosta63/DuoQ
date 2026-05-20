@@ -53,6 +53,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isValidMatch(incoming())
                     && (incoming().user1Id != incoming().user2Id); // basic sanity check
+      allow update: if true;
     }
 
     function isValidMessage(data) {

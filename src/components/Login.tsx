@@ -67,7 +67,8 @@ export function Login() {
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#7C3AED] rounded flex items-center justify-center font-black text-3xl text-white shadow-[0_0_15px_rgba(124,58,237,0.4)]">
+              <img src="/logo.png" alt="DuoQ Logo" className="w-12 h-12 object-contain rounded-lg shadow-[0_0_15px_rgba(124,58,237,0.4)]" onError={(e) => { e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling!.classList.remove('hidden'); }} />
+              <div className="w-12 h-12 bg-[#7C3AED] rounded flex items-center justify-center font-black text-3xl text-white shadow-[0_0_15px_rgba(124,58,237,0.4)] hidden">
                 Q
               </div>
               <h1 className="text-4xl font-black italic tracking-tighter uppercase text-white mt-1 leading-none">
