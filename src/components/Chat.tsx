@@ -123,7 +123,7 @@ export function Chat({ match, onBack }: ChatProps) {
 
       {/* Profil complet révélé */}
       {showProfile && (
-        <div className="p-6 bg-[#0E0E0E] border-b border-[#2A2A2A] animate-in slide-in-from-top-2">
+        <div className="p-6 bg-[#0E0E0E] border-b border-[#2A2A2A] animate-in slide-in-from-top-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
           <div className="bg-[#111] p-6 rounded-xl border border-[#333]">
             <div className="flex items-center gap-2 text-[#7C3AED] text-[10px] font-bold uppercase tracking-widest mb-4">
               <Gamepad2 className="w-4 h-4" /> Profil Débloqué
