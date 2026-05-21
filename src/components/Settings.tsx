@@ -28,6 +28,141 @@ export function Settings({ onBack }: SettingsProps) {
   
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
+  const [generating, setGenerating] = useState(false);
+
+  const generateTestUsers = async () => {
+    setGenerating(true);
+    setMsg('');
+    try {
+      const { doc, setDoc } = await import('firebase/firestore');
+      const { db } = await import('../firebase');
+      const { v4: uuidv4 } = await import('uuid');
+      const bcrypt = await import('bcryptjs');
+
+      const testUsers = [
+        {
+          username: "FakerBot",
+          bio: "Je joue que pour la gagne. Si tu troll tu dégages.",
+          games: "League of Legends, Valorant",
+          platforms: "PC",
+          playstyle: "Tryhard",
+          availabilities: "Tous les soirs",
+          relation_mode: "🖥️ PC",
+          gender: "Homme",
+          avatar_url: "https://i.pravatar.cc/150?img=11",
+          questionnaire: {
+            q1: "Leader, je call toujours les objectifs.",
+            q2: "Je dis rien mais je le juge fort.",
+            q3: "Quelqu'un qui sait écouter mes calls.",
+            q4: "Vocal obligatoire, sinon pas la peine.",
+            q5: "Mon premier passage Challenger."
+          }
+        },
+        {
+          username: "ChillGirl99",
+          bio: "Juste là pour m'amuser et rencontrer des gens sympas.",
+          games: "Minecraft, Stardew Valley, Animal Crossing",
+          platforms: "PC, Nintendo Switch",
+          playstyle: "Chill",
+          availabilities: "Week-ends uniquement",
+          relation_mode: "🕹️ Joystick",
+          gender: "Femme",
+          avatar_url: "https://i.pravatar.cc/150?img=5",
+          questionnaire: {
+            q1: "Très chill, je fais ma vie.",
+            q2: "C'est pas grave, c'est qu'un jeu haha.",
+            q3: "Quelqu'un avec qui on rigole beaucoup.",
+            q4: "Vocal avec musique de fond, au calme.",
+            q5: "Avoir fini ma ferme sur Stardew."
+          }
+        },
+        {
+          username: "xXSniperXx",
+          bio: "Rush B don't stop. J'ai un aim bot naturel.",
+          games: "CS2, Apex Legends, Call of Duty",
+          platforms: "PC, PS5",
+          playstyle: "Agressif",
+          availabilities: "Après-midi et soirs",
+          relation_mode: "🖥️ PC",
+          gender: "Homme",
+          avatar_url: "https://i.pravatar.cc/150?img=33",
+          questionnaire: {
+            q1: "Toujours en tête, je prends les duels.",
+            q2: "Je râle un peu si c'est de la ranked.",
+            q3: "Un mec qui sait tenir sa ligne.",
+            q4: "Ping seulement ou infos ultra rapides, pas de blabla.",
+            q5: "Mon clutch 1v5 hier."
+          }
+        },
+        {
+          username: "EldenLord",
+          bio: "Je préfère esquiver et parer plutôt que parler.",
+          games: "Elden Ring, Dark Souls, Monster Hunter",
+          platforms: "PC, PS5",
+          playstyle: "Explorateur, Persévérant",
+          availabilities: "La nuit",
+          relation_mode: "🎮 Manette",
+          gender: "Non-binaire",
+          avatar_url: "https://i.pravatar.cc/150?img=9",
+          questionnaire: {
+            q1: "Je tank, je prends les coups.",
+            q2: "On réessaie le boss, c'est tout.",
+            q3: "La patience et la détermination.",
+            q4: "Micro facultatif, ça déconcentre pendant les boss.",
+            q5: "Avoir battu Malenia sans invocation."
+          }
+        },
+        {
+          username: "PocketHealer",
+          bio: "Support main à votre service.",
+          games: "Overwatch 2, Final Fantasy XIV",
+          platforms: "PC",
+          playstyle: "Support",
+          availabilities: "Matin et soir",
+          relation_mode: "🎮 Manette",
+          gender: "Femme",
+          avatar_url: "https://i.pravatar.cc/150?img=43",
+          questionnaire: {
+            q1: "Support pur, je garde tout le monde en vie.",
+            q2: "J'essaie de le heal plus, mais s'il court seul...",
+            q3: "Un tank ou DPS qui sait protéger son heal.",
+            q4: "Vocal pour annoncer où est l'équipe adverse.",
+            q5: "Résurrection de 5 personnes (rip l'ancien temps)."
+          }
+        }
+      ];
+
+      let cnt = 0;
+      for (const u of testUsers) {
+        const newId = uuidv4();
+        const salt = bcrypt.default.genSaltSync(10);
+        const hashedPassword = bcrypt.default.hashSync("test1234", salt);
+
+        await setDoc(doc(db, 'users', newId), {
+          id: newId,
+          email: `${u.username.toLowerCase()}@test.com`,
+          username: u.username,
+          password: hashedPassword,
+          bio: u.bio,
+          games: u.games,
+          platforms: u.platforms,
+          playstyle: u.playstyle,
+          availabilities: u.availabilities,
+          discord_username: "",
+          relation_mode: u.relation_mode,
+          gender: u.gender,
+          avatar_url: u.avatar_url,
+          questionnaire: u.questionnaire || {}
+        });
+        cnt++;
+      }
+      setMsg(`${cnt} comptes générés avec succès !`);
+    } catch (e: any) {
+      console.error(e);
+      setMsg("Erreur lors de la génération.");
+    }
+    setGenerating(false);
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,6 +350,14 @@ export function Settings({ onBack }: SettingsProps) {
           </div>
 
           <div className="pt-6 border-t border-[#2A2A2A] flex justify-between items-center">
+            <button 
+              type="button"
+              onClick={generateTestUsers}
+              disabled={generating}
+              className="flex items-center gap-2 px-4 py-3 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white border border-blue-500/30 rounded-xl text-xs uppercase font-bold tracking-widest transition-all"
+            >
+              🛠️ {generating ? 'Génération...' : 'Générer comptes test'}
+            </button>
             <button 
               type="button"
               onClick={handleDelete}
