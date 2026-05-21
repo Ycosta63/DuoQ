@@ -46,3 +46,16 @@ Cela va regrouper l'interface et le serveur dans le dossier `dist/`. Pour démar
 ```bash
 npm run start
 ```
+
+## ⚙️ Intégration Continue (CI / Pipeline)
+
+Le projet utilise **GitHub Actions** pour assurer la qualité et la stabilité du code à l'aide d'un pipeline d'intégration continue automatisé. La configuration de ce pipeline se trouve dans `.github/workflows/ci.yml`.
+
+À chaque `push` ou `pull_request` sur les branches `main` et `develop`, les étapes suivantes sont déclenchées de manière séquentielle sur un environnement distant (Ubuntu / Node.js 20) :
+
+1. **Installation des dépendances** (`npm ci`) : Téléchargement d'un arbre de dépendances strict.
+2. **Qualité du code / Lint** (`npm run lint`) : Analyse statique du code TypeScript pour détecter les potentielles erreurs de typage et de syntaxe avant exécution.
+3. **Tests Unitaires** (`npm run test`) : Passage de la suite de tests automatisés (via Vitest) sur nos composants React pour s'assurer du non-bris des fonctionnalités critiques (connexion, swipe, mise à jour des paramètres).
+4. **Compilation / Build** (`npm run build`) : Construction complète du frontend et du backend pour vérifier que le projet est apte à être déployé en production (`dist/`).
+
+Si l'une de ces étapes échoue, le pipeline sera signalé en erreur et sécurisera le dépôt en bloquant potentiellement le déploiement ou l'intégration d'un code instable.
