@@ -12,7 +12,7 @@ interface ChatProps {
 }
 
 export function Chat({ match, onBack }: ChatProps) {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [showProfile, setShowProfile] = useState(false);
@@ -88,6 +88,22 @@ export function Chat({ match, onBack }: ChatProps) {
       }
     } catch(e) {
       console.error("Error sending message:", e);
+    }
+  };
+
+  const handleBlock = async () => {
+    if (!user) return;
+    if (window.confirm("Voulez-vous vraiment bloquer cet utilisateur ? Vous ne verrez plus ce lobby ni son profil.")) {
+      try {
+        const currentBlocked = user.blocked_users || [];
+        if (!currentBlocked.includes(match.user_id!)) {
+          const newBlocked = [...currentBlocked, match.user_id!];
+          await updateProfile({ blocked_users: newBlocked });
+        }
+        onBack();
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -235,6 +251,15 @@ export function Chat({ match, onBack }: ChatProps) {
                   <MessageSquare className="w-4 h-4" />
                   Ouvrir Discord
                 </a>
+              </div>
+              
+              <div className="pt-4 mt-4 border-t border-[#333]">
+                <button 
+                  onClick={handleBlock}
+                  className="w-full bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/50 rounded-lg py-3 px-4 font-bold transition-colors text-[10px] uppercase tracking-widest"
+                >
+                  Bloquer cet utilisateur
+                </button>
               </div>
             </div>
           </div>

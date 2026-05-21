@@ -49,10 +49,14 @@ export function Matches({ onSelectMatch }: MatchesProps) {
         } as Match & { unread?: boolean; lastMessage?: string | null };
       }));
 
-      // Sort by newest activity roughly
-      populated.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      // Filter out blocked users
+      const blocked = user.blocked_users || [];
+      const filtered = populated.filter(m => !blocked.includes(m.user_id!));
 
-      setMatches(populated);
+      // Sort by newest activity roughly
+      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setMatches(filtered);
       setLoading(false);
     });
 

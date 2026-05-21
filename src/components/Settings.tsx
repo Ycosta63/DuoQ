@@ -25,6 +25,11 @@ export function Settings({ onBack }: SettingsProps) {
   const [relationMode, setRelationMode] = useState(user?.relation_mode || RELATION_MODES[0].id);
   const [gender, setGender] = useState(user?.gender || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || '');
+  const [q1, setQ1] = useState(user?.questionnaire?.q1 || '');
+  const [q2, setQ2] = useState(user?.questionnaire?.q2 || '');
+  const [q3, setQ3] = useState(user?.questionnaire?.q3 || '');
+  const [q4, setQ4] = useState(user?.questionnaire?.q4 || '');
+  const [q5, setQ5] = useState(user?.questionnaire?.q5 || '');
   
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
@@ -168,7 +173,12 @@ export function Settings({ onBack }: SettingsProps) {
     e.preventDefault();
     setSaving(true);
     setMsg('');
-    const res = await updateProfile({ bio, games, platforms, playstyle, availabilities, discord_username: discordUsername, relation_mode: relationMode, gender, avatar_url: avatarUrl });
+    const res = await updateProfile({ 
+      bio, games, platforms, playstyle, availabilities, 
+      discord_username: discordUsername, relation_mode: relationMode, 
+      gender, avatar_url: avatarUrl,
+      questionnaire: { q1, q2, q3, q4, q5 }
+    });
     setSaving(false);
     if (res.error) {
       setMsg(res.error);
@@ -345,6 +355,59 @@ export function Settings({ onBack }: SettingsProps) {
                     <span className="text-xs font-bold leading-tight">{mode.label.split(' (')[0]}</span>
                   </label>
                 ))}
+              </div>
+            </div>
+
+            <div className="col-span-2 mt-8 mb-4">
+              <h3 className="text-xl font-black italic tracking-tighter uppercase text-[#7C3AED] drop-shadow-md">Questionnaire de Match</h3>
+              <p className="text-[#888] text-xs uppercase tracking-widest font-bold mb-4">Ces réponses seront visibles sur votre profil par vos matchs.</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">1. Quel type de coéquipier es-tu in-game ?</label>
+                  <input 
+                    type="text" 
+                    value={q1}
+                    onChange={(e) => setQ1(e.target.value)}
+                    className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">2. Ta réaction quand un mate feed ?</label>
+                  <input 
+                    type="text" 
+                    value={q2}
+                    onChange={(e) => setQ2(e.target.value)}
+                    className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">3. Que cherches-tu idéalement chez ton/ta Duo ?</label>
+                  <input 
+                    type="text" 
+                    value={q3}
+                    onChange={(e) => setQ3(e.target.value)}
+                    className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">4. Plutôt vocal h24 ou sans micro / ping uniquement ?</label>
+                  <input 
+                    type="text" 
+                    value={q4}
+                    onChange={(e) => setQ4(e.target.value)}
+                    className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#888] mb-2 block">5. Ton moment préféré ou plus grand accomplissement gaming ?</label>
+                  <input 
+                    type="text" 
+                    value={q5}
+                    onChange={(e) => setQ5(e.target.value)}
+                    className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white placeholder-[#555] focus:outline-none focus:border-[#7C3AED] text-sm"
+                  />
+                </div>
               </div>
             </div>
           </div>

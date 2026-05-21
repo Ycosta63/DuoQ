@@ -34,9 +34,11 @@ export function Discover() {
       const userDocs = await getDocs(usersRef);
       
       const availableProfiles: User[] = [];
+      const blocked = user.blocked_users || [];
+      
       userDocs.forEach(doc => {
         const u = doc.data() as User;
-        if (u.id !== user.id && !swipedUserIds.includes(u.id)) {
+        if (u.id !== user.id && !swipedUserIds.includes(u.id) && !blocked.includes(u.id)) {
           availableProfiles.push(u);
         }
       });

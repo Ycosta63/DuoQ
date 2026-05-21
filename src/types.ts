@@ -13,6 +13,7 @@ export interface User {
   questionnaire?: Record<string, string>;
   gender?: string;
   avatar_url?: string;
+  blocked_users?: string[];
 }
 
 export interface Match {
