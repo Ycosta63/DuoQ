@@ -66,3 +66,73 @@ L'objectif est d'assurer que l'application (DuoQ) permet une connexion fiable, u
     - **Composants d'animations pures** : L'utilisation de `motion/react` et des timeouts (comme ceux de `Discover.tsx` fixés à `400ms` lors d'un swipe) ajoutent un niveau de complexité inutile en test unitaire. Les transitions et l'affichage purement visuel (les textures transparentes de fond, les icônes de Gamepad2 avec opacité) sont couverts partiellement et ne garantissent pas de crash fatal.
     - **Composant Chat.tsx** : Les sous-composants dédiés au scroll automatique via les Refs (`messagesEndRef`) dans la vue de chat sont souvent difficiles à mesurer par un runner virtuel non-DOM (jsdom).
     - **Bouton Discord Oauth** : Les popups externes (ou les redicrections Oauth externes) ne sont pas couverts en tests unitaires mais via des Post-messages Mockés, car les environnements serveur (Firebase Google/Discord) réels ne doivent pas être interrogés excessivement par une CI.
+
+---
+
+## 4. Exécution Automatisée des Tests
+
+Nous avons mis en place une suite de tests unitaires automatisés avec **Vitest** et **React Testing Library** pour valider les comportements métiers sans solliciter les bases de données réelles (les appels Firebase sont simulés ou *mockés*).
+
+### Comment lancer les tests
+
+Depuis la racine du projet, vous pouvez ouvrir un terminal et taper les commandes suivantes :
+
+- **Lancer la suite de test classique :**
+  ```bash
+  npm run test
+  # ou
+  npx vitest run
+  ```
+  *Cette commande exécute tous les fichiers portant l'extension `.test.tsx` ou `.test.ts` et affiche le récapitulatif (succès / échecs).*
+
+- **Générer un rapport de couverture (Coverage) :**
+  ```bash
+  npx vitest run --coverage
+  ```
+  *Génère un tableau détaillé montrant le taux de code testé (% des lignes, fonctions, et conditions logiques testées).*
+
+### Ce que font les tests et les résultats attendus
+
+Les tests automatisés ciblent directement nos composants critiques. Voici ce qui est validé en coulisses à chaque exécution :
+
+1. **`Login.test.tsx` (Authentification) :**
+   - **Ce qu'il fait** : Il simule la saisie d'informations dans les champs de texte (pseudo, mots de passe) et clique sur les boutons d'envoi.
+   - **Résultat attendu** :
+     - Vérifie que le composant rend bien les champs par défaut.
+     - Vérifie que la fonction `login` du context est appelée avec les mots de passe et pseudo tapés par l'outil de test.
+     - Simule une erreur de connexion ("Mot de passe incorrect") et s'assure que le message d'erreur rouge s'affiche à l'écran.
+     - Vérifie que si le joueur n'coche PAS la case "18 ans et plus", l'inscription bloque avec un message d'erreur.
+
+2. **`Settings.test.tsx` (Mise à jour du profil) :**
+   - **Ce qu'il fait** : Il charge le composant *"Paramètres"* en lui simulant un profil utilisateur existant (Ex: avec une "Old Bio"). 
+   - **Résultat attendu** :
+     - S'assure que les valeurs par défaut issues de la base sont bien injectées dans les champs.
+     - Simule le changement du champ *"Bio"* en lui passant *"New Bio"* puis soumet.
+     - S'assure que la fonction `updateProfile` de Firebase est bien appelée avec la nouvelle valeur.
+
+3. **`Discover.test.tsx` (L'Arena et Swipe) :**
+   - **Ce qu'il fait** : Il simule l'appel de données Firestore (qui retourne une liste fixe de profils virtuels).
+   - **Résultat attendu** :
+     - Vérifie l'apparition globale d'un profil (Ex: *TestUser1*) après suppression du spinner de chargement (état initial).
+     - Simule le clic sur le bouton de match ("GG").
+     - Valide que Firestore enregistre bien l'action logicielle liée à l'interaction en local.
+
+### Erreurs possibles en test et résolutions courantes
+
+Lors du lancement de `npm run test`, certaines erreurs fréquentes peuvent apparaitre. Voici comment les interpréter :
+
+1. **`AssertionError: expected "vi.fn()" to be called...` (Spy non appelé)**
+   - **Cause** : Le composant UI n'a pas appelé la fonction attendue. Le chemin d'exécution a peut-être bloqué avant. (Ex: Oubli de valider un formulaire avec `<form onSubmit={...}>` ou champ requis (HMTL5) empêchant la soumission en local).
+   - **Résolution** : Vérifier que le bouton simulé soumet bien un *form* validé ou utiliser `fireEvent.submit(...)`.
+
+2. **`TestingLibraryElementError: Unable to find an element / Placeholder text not found`**
+   - **Cause** : L'outil cherche un élément sur l'écran qui n'existe pas. Courant quand on modifie un label texte (ex: remplacement de "*Bio*" par "*Description*").
+   - **Résolution** : Modifier les fichiers `*.test.tsx` pour changer les textes ciblés ou utiliser des datatest-ids (`data-testid`). 
+
+3. **`TypeError: userDocs.forEach is not a function / Firebase undefined`**
+   - **Cause** : Les outils de tests (Vitest) n'ont pas accès à la base de données réelle (et ne le doivent pas). Nos données "mocks" (simulées en haut de tests) sont incomplètes.
+   - **Résolution** : Améliorer le `vi.mock('firebase/firestore')` pour injecter la propriété ou méthode manquante (comme le mapping `forEach` sur les requêtes renvoyées).
+
+4. **`Wrap state updates in act(...)`**
+   - **Cause** : Un changement d'état UI React (`useState`) asynchrone a eu lieu dans un test non protégé. L'UI a tenté de sauter d'une étape à l'autre sans que l'environnement Node/JSDOM soit "prêt" à l'attendre.
+   - **Résolution** : Englober les actions provoquant ces changements dans un `await waitFor()` ou `act()`, assurant l'attente du rendu des conséquences de l'action.
