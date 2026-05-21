@@ -212,18 +212,18 @@ export function Settings({ onBack }: SettingsProps) {
   if (!user) return null;
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-2xl bg-[#0E0E0E] border border-[#2A2A2A] rounded-3xl p-8 relative">
+    <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-10 overflow-y-auto custom-scrollbar w-full">
+      <div className="w-full max-w-3xl bg-[#0E0E0E]/80 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-10 shadow-2xl relative mb-10">
         <button 
           onClick={onBack}
-          className="absolute top-6 left-6 p-2 rounded-xl bg-[#1A1A1A] border border-[#333] hover:border-[#7C3AED] hover:text-[#7C3AED] transition-colors"
+          className="absolute top-6 left-6 p-2 rounded-xl bg-black/50 border border-white/10 hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#7C3AED]/10 transition-all duration-300"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
         
-        <div className="text-center mb-8 pt-4">
-          <h2 className="text-2xl font-black italic tracking-tighter uppercase mb-2">Paramètres (RGPD)</h2>
-          <p className="text-[#888] text-sm">Gérez vos informations personnelles et vos préférences de match.</p>
+        <div className="text-center mb-10 pt-4">
+          <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter uppercase mb-2 drop-shadow-md text-white">Paramètres</h2>
+          <p className="text-[#888] text-sm uppercase tracking-widest font-bold">Gérez vos informations & préférences de match.</p>
         </div>
 
         {msg && (
@@ -349,29 +349,31 @@ export function Settings({ onBack }: SettingsProps) {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-[#2A2A2A] flex justify-between items-center">
+          <div className="pt-8 border-t border-[#2A2A2A] flex flex-col sm:flex-row justify-between items-center gap-4">
             <button 
               type="button"
               onClick={generateTestUsers}
               disabled={generating}
-              className="flex items-center gap-2 px-4 py-3 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white border border-blue-500/30 rounded-xl text-xs uppercase font-bold tracking-widest transition-all"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white border border-blue-500/30 rounded-xl text-xs uppercase font-bold tracking-widest transition-all"
             >
               🛠️ {generating ? 'Génération...' : 'Générer comptes test'}
             </button>
-            <button 
-              type="button"
-              onClick={handleDelete}
-              className="flex items-center gap-2 px-4 py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/30 rounded-xl text-xs uppercase font-bold tracking-widest transition-all"
-            >
-              <Trash2 className="w-4 h-4" /> Supprimer mon compte
-            </button>
-            <button 
-              type="submit"
-              disabled={saving}
-              className="flex items-center gap-2 px-8 py-3 bg-[#7C3AED] text-white hover:bg-[#6D28D9] rounded-xl text-xs uppercase font-bold tracking-widest transition-all"
-            >
-              <Save className="w-4 h-4" /> {saving ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4 sm:mt-0">
+              <button 
+                type="button"
+                onClick={handleDelete}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/30 rounded-xl text-xs uppercase font-bold tracking-widest transition-all"
+              >
+                <Trash2 className="w-4 h-4" /> Supprimer
+              </button>
+              <button 
+                type="submit"
+                disabled={saving}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] hover:from-[#6D28D9] hover:to-[#5B21B6] text-white rounded-xl text-xs uppercase font-bold tracking-widest transition-all shadow-lg active:scale-95"
+              >
+                <Save className="w-4 h-4" /> {saving ? 'Enregistrement...' : 'Enregistrer'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Match, Message } from '../types';
-import { ArrowLeft, Send, Gamepad2, Info, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Send, Gamepad2, Info, MessageSquare, X } from 'lucide-react';
 import { collection, query, orderBy, onSnapshot, setDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ChatProps {
   match: Match;
@@ -122,14 +123,25 @@ export function Chat({ match, onBack }: ChatProps) {
       </header>
 
       {/* Profil complet révélé */}
-      {showProfile && (
-        <div className="p-6 bg-[#0E0E0E] border-b border-[#2A2A2A] animate-in slide-in-from-top-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
-          <div className="bg-[#111] p-6 rounded-xl border border-[#333]">
-            <div className="flex items-center gap-2 text-[#7C3AED] text-[10px] font-bold uppercase tracking-widest mb-4">
-              <Gamepad2 className="w-4 h-4" /> Profil Débloqué
-            </div>
-            
-            <div className="space-y-4 text-sm">
+      <AnimatePresence>
+        {showProfile && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-16 left-0 right-0 bottom-0 z-20 p-4 sm:p-6 bg-[#0E0E0E]/95 backdrop-blur-xl border-b border-[#2A2A2A] overflow-y-auto custom-scrollbar"
+          >
+            <div className="bg-[#111] p-6 rounded-2xl border border-[#333] shadow-2xl max-w-2xl mx-auto">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-[#7C3AED] text-[10px] font-bold uppercase tracking-widest">
+                  <Gamepad2 className="w-4 h-4" /> Profil Débloqué
+                </div>
+                <button onClick={() => setShowProfile(false)} className="text-[#555] hover:text-white transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4 text-sm">
               <div>
                 <span className="text-[#555] block text-[10px] uppercase tracking-widest font-bold mb-1">Bio</span>
                 <p className="text-white">{match.bio || <span className="text-[#555] font-mono italic">Not provided</span>}</p>
@@ -226,8 +238,9 @@ export function Chat({ match, onBack }: ChatProps) {
               </div>
             </div>
           </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">

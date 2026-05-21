@@ -71,9 +71,14 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#1a102e_0%,_#0a0a0a_100%)] flex flex-col items-center justify-center p-4 relative">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none mix-blend-overlay"></div>
-      <div className="w-full max-w-md bg-[#0E0E0E] border border-[#2A2A2A] rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Deep Space Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_center,_#1c103f_0%,_#000000_70%)]"></div>
+        <div className="absolute top-0 left-0 right-0 h-[30vh] bg-gradient-to-b from-[#7C3AED]/10 to-transparent"></div>
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-screen"></div>
+      </div>
+      <div className="w-full max-w-md bg-[#0E0E0E]/95 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden z-10">
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
           <Gamepad2 className="w-64 h-64 text-[#7C3AED] transform rotate-12" />
         </div>

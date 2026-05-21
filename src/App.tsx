@@ -9,6 +9,7 @@ import { Gamepad2, HeartHandshake, MessageCircle, Settings as SettingsIcon, X } 
 import { Match, User } from './types';
 import { collection, query, or, where, onSnapshot, getDoc, doc } from 'firebase/firestore';
 import { db } from './firebase';
+import { motion, AnimatePresence } from 'motion/react';
 
 function MainApp() {
   const { user, loading, logout } = useAuth();
@@ -112,7 +113,15 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_#1a102e_0%,_#0a0a0a_80%)] text-[#F0F0F0] flex flex-col font-sans selection:bg-[#7C3AED]/30 relative">
+    <div className="min-h-screen bg-black text-[#F0F0F0] flex flex-col font-sans selection:bg-[#7C3AED]/30 relative overflow-hidden">
+      {/* Deep Space Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_center,_#1c103f_0%,_#000000_70%)]"></div>
+        <div className="absolute top-0 left-0 right-0 h-[30vh] bg-gradient-to-b from-[#7C3AED]/10 to-transparent"></div>
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-screen"></div>
+      </div>
+      
+      <div className="flex-1 flex flex-col relative z-10 h-screen">
       {globalMatchAlert && (
         <div className="fixed inset-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-in fade-in zoom-in-95 duration-300">
           <button 
@@ -171,57 +180,75 @@ function MainApp() {
         </div>
       )}
 
-      <header className="px-8 h-20 flex items-center justify-between border-b border-[#2A2A2A] bg-[#0E0E0E] sticky top-0 z-10 transition-colors">
+      <header className="px-6 sm:px-10 h-20 flex items-center justify-between bg-black/40 backdrop-blur-2xl border-b border-white/5 sticky top-0 z-40 transition-colors shrink-0">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="DuoQ Logo" className="w-10 h-10 object-contain rounded-lg" onError={(e) => { e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling!.classList.remove('hidden'); }} />
-          <div className="w-10 h-10 bg-[#7C3AED] rounded flex items-center justify-center font-black text-2xl text-white hidden">Q</div>
-          <h1 className="text-2xl font-black tracking-tighter uppercase italic text-white leading-none mt-1">
+          <div className="w-10 h-10 bg-gradient-to-tr from-[#6D28D9] to-[#7C3AED] rounded-xl flex items-center justify-center font-black text-2xl text-white shadow-lg hidden">Q</div>
+          <h1 className="text-2xl font-black tracking-tighter uppercase italic text-white leading-none mt-1 drop-shadow-md">
             DuoQ
           </h1>
         </div>
-        <nav className="flex items-center gap-8">
+        <nav className="flex items-center gap-4 sm:gap-8">
           <button 
             onClick={() => setCurrentView('discover')}
-            className={`flex items-center gap-2 text-sm uppercase tracking-widest font-semibold transition-all duration-300 py-1 ${currentView === 'discover' ? 'border-b-2 border-[#7C3AED] text-white' : 'border-b-2 border-transparent text-[#888] hover:text-white'}`}
+            className={`flex items-center gap-2 text-xs sm:text-sm uppercase tracking-widest font-semibold transition-all duration-300 py-2 relative group ${currentView === 'discover' ? 'text-white' : 'text-[#888] hover:text-white'}`}
             title="Découvrir"
           >
-            <Gamepad2 className="w-4 h-4" /> Arena
+            <Gamepad2 className={`w-4 h-4 transition-transform duration-300 ${currentView === 'discover' ? 'scale-110 text-[#7C3AED]' : 'group-hover:scale-110'}`} /> 
+            <span className="hidden sm:inline">Arena</span>
+            {currentView === 'discover' && <motion.div layoutId="nav-pill" className="absolute -bottom-6 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#7C3AED] to-transparent rounded-t-full" />}
           </button>
           <button 
             onClick={() => {
               setCurrentView('matches');
               setActiveMatch(null);
             }}
-            className={`relative flex items-center gap-2 text-sm uppercase tracking-widest font-semibold transition-all duration-300 py-1 ${currentView === 'matches' || currentView === 'chat' ? 'border-b-2 border-[#7C3AED] text-white' : 'border-b-2 border-transparent text-[#888] hover:text-white'}`}
+            className={`relative flex items-center gap-2 text-xs sm:text-sm uppercase tracking-widest font-semibold transition-all duration-300 py-2 group ${currentView === 'matches' || currentView === 'chat' ? 'text-white' : 'text-[#888] hover:text-white'}`}
             title="Matchs & Messages"
           >
-            <MessageCircle className="w-4 h-4" /> Lobbies
+            <MessageCircle className={`w-4 h-4 transition-transform duration-300 ${currentView === 'matches' || currentView === 'chat' ? 'scale-110 text-[#7C3AED]' : 'group-hover:scale-110'}`} />
+            <span className="hidden sm:inline">Lobbies</span>
+            {(currentView === 'matches' || currentView === 'chat') && <motion.div layoutId="nav-pill" className="absolute -bottom-6 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#7C3AED] to-transparent rounded-t-full" />}
             {hasNewMatches && (
-              <span className="absolute top-1 -right-3 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+              <span className="absolute top-1 sm:top-2 -right-2 sm:-right-4 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
             )}
           </button>
           <button 
             onClick={() => setCurrentView('settings')}
-            className={`flex items-center gap-2 text-sm uppercase tracking-widest font-semibold transition-all duration-300 py-1 ${currentView === 'settings' ? 'border-b-2 border-[#7C3AED] text-white' : 'border-b-2 border-transparent text-[#888] hover:text-white'}`}
+            className={`flex items-center gap-2 text-xs sm:text-sm uppercase tracking-widest font-semibold transition-all duration-300 py-2 relative group ${currentView === 'settings' ? 'text-white' : 'text-[#888] hover:text-white'}`}
             title="Profil"
           >
-            <SettingsIcon className="w-4 h-4" /> Profil
+            <SettingsIcon className={`w-4 h-4 transition-transform duration-300 ${currentView === 'settings' ? 'scale-110 text-[#7C3AED]' : 'group-hover:scale-110'}`} />
+            <span className="hidden sm:inline">Profil</span>
+            {currentView === 'settings' && <motion.div layoutId="nav-pill" className="absolute -bottom-6 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#7C3AED] to-transparent rounded-t-full" />}
           </button>
           
-          <button onClick={logout} className="text-[10px] uppercase font-bold tracking-widest text-[#555] hover:text-red-500 transition-colors">
-            Déconnexion
+          <button onClick={logout} className="ml-2 sm:ml-4 text-[10px] uppercase font-bold tracking-widest text-[#555] hover:text-red-500 transition-colors bg-white/5 hover:bg-red-500/10 px-3 py-1.5 rounded-full">
+            Out
           </button>
         </nav>
       </header>
       
       <main className="flex-1 flex flex-col relative overflow-hidden">
-        {currentView === 'discover' && <Discover />}
-        {currentView === 'matches' && <Matches onSelectMatch={(m) => { setActiveMatch(m); setCurrentView('chat'); }} />}
-        {currentView === 'chat' && activeMatch && (
-          <Chat match={activeMatch} onBack={() => { setActiveMatch(null); setCurrentView('matches'); }} />
-        )}
-        {currentView === 'settings' && <Settings onBack={() => setCurrentView('discover')} />}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentView}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="flex-1 flex flex-col absolute inset-0"
+          >
+            {currentView === 'discover' && <Discover />}
+            {currentView === 'matches' && <Matches onSelectMatch={(m) => { setActiveMatch(m); setCurrentView('chat'); }} />}
+            {currentView === 'chat' && activeMatch && (
+              <Chat match={activeMatch} onBack={() => { setActiveMatch(null); setCurrentView('matches'); }} />
+            )}
+            {currentView === 'settings' && <Settings onBack={() => setCurrentView('discover')} />}
+          </motion.div>
+        </AnimatePresence>
       </main>
+      </div>
     </div>
   );
 }

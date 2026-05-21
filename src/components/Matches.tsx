@@ -78,28 +78,28 @@ export function Matches({ onSelectMatch }: MatchesProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col p-8 animate-in fade-in">
-      <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white mb-8 border-b-2 border-[#2A2A2A] pb-2">Lobbies</h2>
+    <div className="flex-1 flex flex-col p-6 sm:p-10 animate-in fade-in max-w-7xl mx-auto w-full">
+      <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white mb-8 drop-shadow-md">Vos Lobbies</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {matches.map(match => (
           <button 
             key={match.match_id}
             onClick={() => onSelectMatch(match)}
-            className="flex items-center text-left bg-[#0E0E0E] border border-[#2A2A2A] rounded-xl p-4 hover:border-[#7C3AED] hover:bg-[#1A1A1A] transition-all group relative overflow-hidden"
+            className="flex items-center text-left bg-[#0E0E0E]/60 backdrop-blur-md border border-white/5 rounded-2xl p-5 hover:border-[#7C3AED]/50 hover:bg-[#7C3AED]/10 hover:shadow-[0_0_30px_rgba(124,58,237,0.15)] transition-all duration-300 group relative overflow-hidden"
           >
             {match.unread && (
-              <div className="absolute top-4 right-4 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+              <div className="absolute top-5 right-5 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(239,68,68,1)]"></div>
             )}
-            <div className="w-14 h-14 bg-[#1A1A1A] border border-[#333] rounded-full flex items-center justify-center mr-4 text-2xl group-hover:scale-110 transition-transform">
+            <div className="w-14 h-14 bg-gradient-to-tr from-[#111] to-[#222] border border-white/10 shadow-inner rounded-full flex items-center justify-center mr-5 text-2xl group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
               {match.relation_mode.split(' ')[0]}
             </div>
             <div className="flex-1 min-w-0 pr-4">
-              <h3 className={`text-xl font-black italic uppercase tracking-tighter truncate ${match.unread ? 'text-white' : 'text-[#DDD]'}`}>{match.username}</h3>
+              <h3 className={`text-xl sm:text-2xl font-black italic uppercase tracking-tighter truncate leading-none ${match.unread ? 'text-white drop-shadow-sm' : 'text-[#DDD]'}`}>{match.username}</h3>
               {match.lastMessage ? (
-                <p className={`text-xs truncate mt-0.5 ${match.unread ? 'text-white font-medium' : 'text-[#888]'}`}>{match.lastMessage}</p>
+                <p className={`text-xs top-1 truncate mt-1 sm:mt-1.5 ${match.unread ? 'text-white font-semibold' : 'text-[#888]'}`}>{match.lastMessage}</p>
               ) : (
-                <p className="text-[10px] text-[#888] uppercase font-bold tracking-widest truncate mt-1">{match.games || 'Gamer'}</p>
+                <p className="text-[9px] sm:text-[10px] text-[#A0A0A0] uppercase font-bold tracking-widest truncate mt-2">{match.games.split(',')[0] || 'Gamer'} Main</p>
               )}
             </div>
           </button>

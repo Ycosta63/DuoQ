@@ -279,25 +279,25 @@ export function Discover() {
       </div>
       
       {/* Decision Floating Actions - Now placed below the card */}
-      <div className="mt-8 flex items-center justify-center gap-4 sm:gap-6 shrink-0 h-24">
+      <div className="mt-8 flex items-center justify-center gap-4 sm:gap-8 shrink-0 h-24">
         <button 
           onClick={() => handleSwipe('FF')}
           disabled={!!swipeDirection}
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center hover:bg-[#2A1010] hover:border-red-500/50 hover:text-red-500 group transition-all"
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#0A0A0A]/80 backdrop-blur-md border border-white/5 flex items-center justify-center hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-500 hover:shadow-[0_0_25px_rgba(239,68,68,0.2)] group transition-all duration-300"
         >
-          <span className="text-lg sm:text-xl font-black text-[#888] group-hover:text-red-500 transition-colors">FF</span>
+          <span className="text-lg sm:text-2xl font-black text-[#555] group-hover:text-red-500 transition-colors">FF</span>
         </button>  
         <button 
           onClick={() => handleSwipe('GG')}
           disabled={!!swipeDirection}
-          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-[#6D28D9] to-[#7C3AED] shadow-[0_0_20px_rgba(124,58,237,0.3)] border border-[#7C3AED]/30 flex items-center justify-center hover:scale-105 hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] transition-all"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-[#5B21B6] via-[#7C3AED] to-[#9333EA] shadow-[0_0_30px_rgba(124,58,237,0.4)] border border-white/20 flex items-center justify-center hover:scale-110 hover:shadow-[0_0_40px_rgba(124,58,237,0.6)] transition-all duration-300"
         >
-          <span className="text-2xl sm:text-3xl font-black italic text-white mt-0.5">GG</span>
+          <span className="text-3xl sm:text-4xl font-black italic text-white drop-shadow-md mt-0.5">GG</span>
         </button>
         <button 
           onClick={() => handleSwipe('GOAT')}
           disabled={!!swipeDirection}
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center hover:bg-[#251A0A] hover:border-yellow-500/50 hover:scale-110 transition-all text-xl sm:text-2xl shadow-lg"
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#0A0A0A]/80 backdrop-blur-md border border-white/5 flex items-center justify-center hover:bg-yellow-500/10 hover:border-yellow-500/50 hover:scale-110 hover:shadow-[0_0_25px_rgba(234,179,8,0.2)] transition-all duration-300 text-2xl sm:text-3xl shadow-lg"
           title="Greatest Of All Time Match"
         >
           🐐
