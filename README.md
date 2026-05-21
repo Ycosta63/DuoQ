@@ -47,15 +47,19 @@ Cela va regrouper l'interface et le serveur dans le dossier `dist/`. Pour démar
 npm run start
 ```
 
-## ⚙️ Intégration Continue (CI / Pipeline)
+## ⚙️ Intégration Continue et Déploiement Continu (CI/CD Pipeline)
 
-Le projet utilise **GitHub Actions** pour assurer la qualité et la stabilité du code à l'aide d'un pipeline d'intégration continue automatisé. La configuration de ce pipeline se trouve dans `.github/workflows/ci.yml`.
+Le projet utilise **GitHub Actions** pour assurer la qualité et la stabilité du code, ainsi que son déploiement automatique en production. La configuration de ce pipeline complet se trouve dans `.github/workflows/ci.yml`.
 
-À chaque `push` ou `pull_request` sur les branches `main` et `develop`, les étapes suivantes sont déclenchées de manière séquentielle sur un environnement distant (Ubuntu / Node.js 20) :
+À chaque `push` ou `pull_request` sur les branches `main` et `develop`, une première étape d'intégration continue (CI) garantit l'intégrité du code (Job `build-and-test`) :
 
-1. **Installation des dépendances** (`npm ci`) : Téléchargement d'un arbre de dépendances strict.
+1. **Installation des dépendances** (`npm ci`) : Téléchargement d'un arbre de dépendances strict pour reproduire l'environnement.
 2. **Qualité du code / Lint** (`npm run lint`) : Analyse statique du code TypeScript pour détecter les potentielles erreurs de typage et de syntaxe avant exécution.
-3. **Tests Unitaires** (`npm run test`) : Passage de la suite de tests automatisés (via Vitest) sur nos composants React pour s'assurer du non-bris des fonctionnalités critiques (connexion, swipe, mise à jour des paramètres).
-4. **Compilation / Build** (`npm run build`) : Construction complète du frontend et du backend pour vérifier que le projet est apte à être déployé en production (`dist/`).
+3. **Tests Unitaires** (`npm run test`) : Passage de la suite de tests automatisés (via Vitest) sur nos composants React pour s'assurer du non-bris des fonctionnalités critiques.
+4. **Compilation / Build** (`npm run build`) : Construction complète pour vérifier que le projet est apte à être exécuté. Si une de ces étapes échoue, le processus s'arrête ici.
 
-Si l'une de ces étapes échoue, le pipeline sera signalé en erreur et sécurisera le dépôt en bloquant potentiellement le déploiement ou l'intégration d'un code instable.
+### 🚀 Déploiement Automatique (CD)
+
+Si toutes les étapes précédentes réussissent, et **uniquement lors d'un merge ou d'un push sur la branche `main`**, le job `deploy-production` s'exécute pour mettre en ligne la dernière version :
+
+5. **Déploiement en Production** (`Deploy to Firebase Hosting`) : L'action GitHub utilise les identifiants sécurisés (Secrets GitHub) pour authentifier le dépôt et déployer automatiquement la version validée sur les serveurs de production. Cela rend la nouvelle version de l'application immédiatement et automatiquement disponible pour les utilisateurs, complétant ainsi notre boucle d'intégration et de livraison continue.
