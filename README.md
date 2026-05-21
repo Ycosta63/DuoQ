@@ -63,3 +63,24 @@ Le projet utilise **GitHub Actions** pour assurer la qualité et la stabilité d
 Si toutes les étapes précédentes réussissent, et **uniquement lors d'un merge ou d'un push sur la branche `main`**, le job `deploy-production` s'exécute pour mettre en ligne la dernière version :
 
 5. **Déploiement en Production** (`Deploy to Firebase Hosting`) : L'action GitHub utilise les identifiants sécurisés (Secrets GitHub) pour authentifier le dépôt et déployer automatiquement la version validée sur les serveurs de production. Cela rend la nouvelle version de l'application immédiatement et automatiquement disponible pour les utilisateurs, complétant ainsi notre boucle d'intégration et de livraison continue.
+
+### 🔄 Stratégie de Déploiement : Blue/Green Deployment (Via Firebase)
+
+Pour notre processus de mise en production, nous avons opté pour une approche **Blue/Green Deployment** (déploiement atomique), facilitée nativement par Firebase Hosting, la plateforme que nous utilisons pour le CD :
+
+- **Raisons du choix :** Contrairement au *rolling update* (où les instances sont mises à jour une par une et peuvent coexister de manière incohérente temporairement), ou au *canary* (déploiement asymétrique sur une fraction de la population), la stratégie Blue/Green via hébergement serverless assure que la nouvelle version est d'abord entièrement préparée et téléversée en isolation ("Green"). Une fois prête, une commutation de trafic instantanée est opérée. Cela garantit qu'il n'y a **aucun temps d'arrêt** (zéro downtime) pour les utilisateurs et prévient les erreurs de cache au chargement partiel.
+
+#### 📝 Déroulé exact d'une mise en production
+1. **Trigger :** Un développeur fusionne (merge) une modification validée vers la branche `main`.
+2. **Isolation (Green) :** Le Pipeline CI/CD sur GitHub Actions s'exécute, vérifie le code et rassemble l'artefact de production complet dans le dossier `dist/`.
+3. **Validation & Téléversement :** Lors de l'étape `Deploy to Firebase Hosting`, les fichiers sont uploadés vers un nouveau slot de publication interne sur les serveurs de Firebase.
+4. **Basculement de Trafic (Switch) :** Une fois le bundle 100% transféré et son intégrité validée cryptographiquement, les CDN et les routeurs Firebase sont mis à jour pour orienter l'intégralité du trafic public vers cette nouvelle version (Blue -> Green) de manière atomique.
+
+#### ⏪ Procédures de Rollback (Retour en Arrière)
+L'avantage critique d'une stratégie Blue/Green est l'immuabilité de la version précédente, qui n'est pas "écrasée" mais préservée comme "inédite". En cas de régression ou de défaillance majeure post-déploiement (ex. crash applicatif sur des données du live) :
+
+- **Rollback Manuel (1 Clic) :** Tout administrateur peut se rendre sur l'interface du projet Firebase, naviguer jusqu'à l'onglet Hosting -> "Historique des versions", trouver la version précédente saine (ancien "Blue"), et cliquer sur l'option de Rollback ("Restaurer").
+- **Rollback via l'Interface de Déploiement CLI :** Un ingénieur DevOps peut basculer le trafic localement via la commande :
+  `firebase hosting:clone your-project-id:version-id-precedente your-project-id:live`
+
+Dans ce cas de figure, le rétablissement de la version stable est instantané, et n'implique pas un redéclenchement long de la phase de CI afin d'obtenir un rétablissement de service ultra rapide.
