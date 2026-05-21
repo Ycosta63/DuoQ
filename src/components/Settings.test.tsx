@@ -32,12 +32,12 @@ describe('Settings Component', () => {
   });
 
   test('renders current user info', () => {
-    render(<Settings />);
+    render(<Settings onBack={() => {}} />);
     expect(screen.getByText('Old Bio')).toBeInTheDocument(); // because textarea stores it as value, actually getByText might not work for textarea values, let's use placeholder or getByDisplayValue.
   });
 
   test('updates profile on save', async () => {
-    render(<Settings />);
+    render(<Settings onBack={() => {}} />);
     
     // Find Avatar input
     const avatarInput = screen.getByPlaceholderText(/Lien vers une image ou avatar Discord/i);
