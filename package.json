@@ -13,7 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@google/genai": "^1.29.0",
+    "@google/genai": "^2.6.0",
     "@grafana/faro-web-sdk": "^2.7.0",
     "@grafana/faro-web-tracing": "^2.7.0",
     "@opentelemetry/auto-instrumentations-node": "^0.76.0",
