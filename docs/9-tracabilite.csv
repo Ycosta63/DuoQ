@@ -1,0 +1,62 @@
+Identifiant exigence,Intitulé ,Composant de conception,Cas de test associé,Livraison 
+US01,"En tant que visiteur, je veux créer un compte avec un pseudonyme, email et mot de passe afin de rejoindre la plateforme de façon sécurisée.","Composant RegisterForm.tsx : Un formulaire comprenant les champs d'entrée pour le pseudonyme, l'adresse email et mot de passe.
+Vérification que l'email est dans un format valide.
+
+Hachage des mots de passe avec l'algorithme bcrypt avec un ""sel"" , les mots de passe ne sont jamais manipulés ni stockés en clair.
+
+Modèle de Base de Données :
+Base de données SQLite stockées dans un environnement Firebase avec une table enregistrant les données de l'utilisateur sous forme d'attributs (email, mot de passe, nom...)
+
+En terme de sécurité, il y a une protection contre les injections XSS sur les champs de texte.","TEST-AUTH-01
+Vérifie que les éléments essentiels du formulaire sont bien présents dans le DOM.
+
+TEST-AUTH-02
+Simule la saisie d'un pseudo et d'un mot de passe corrects, puis valide le formulaire pour appeler la méthode login.
+
+TEST-AUTH-03
+Force le mock mockLogin à retourner une promesse échouée (Mot de passe incorrect) et vérifie que l'UI affiche le message d'erreur à l'utilisateur.","V2
+https://github.com/Ycosta63/DuoQ/commit/d7b2b366eda6c5d8e6599e299d01bc4b93363bf5"
+US02,"En tant que nouvel utilisateur, je veux remplir un questionnaire de profil gamer
+(jeux préférés, plateformes, style de jeu, disponibilités)
+afin de permettre à l'algorithme de trouver des profils compatibles.","A la création du compte, l'utilisateur remplit le questionnaire, il pourra changer ses réponses après. Les réponses pourront influencer son algorithme de match et pourra servir de critères entre utilisateurs,","TEST-PROF-01
+Injection d'un mock d'utilisateur connecté possédant une biographie (Old Bio) et vérification de son affichage à l'écran.","V3
+https://github.com/Ycosta63/DuoQ/commit/e14ad720aac4f4fd99b232cad3ec781e3ec6f833"
+US03,"En tant que nouvel utilisateur, je veux choisir mon type de rencontre recherché
+(Manette / Joystick / Alien Pixel / PC)
+afin de m'assurer que les profils proposés partagent mes intentions.","Le choix de son type de rencontre influe directement sur les différents utilisateurs que l'on croisera en Arena, l'algorithme préfera faire se rencontrer des utilisateurs du même type mais pas exclue de rencontrer d'autre type.","TEST-PROF-02
+Remplace l'URL de l'avatar et la bio par de nouvelles valeurs (http://new.img, New Bio), soumet le formulaire et s'assure que la fonction updateProfile est déclenchée avec les bonnes propriétés.","V1 - Initial comit
+https://github.com/Ycosta63/DuoQ/commit/73ca4223d4aad3b99ec52b8633dac267b6c8a29e"
+US04,"En tant que utilisateur authentifié, je veux consulter une liste de profils suggérés selon mes affinités de jeux afin de découvrir des gamers qui me correspondent.","Page de Découverte : La vue principale où l'utilisateur fait défiler les profils recommandés.
+Composant Carte de Profil (ProfileCard) : Un composant réutilisable affichant le résumé d'un profil (Pseudonyme, avatar/image, principaux jeux en commun, plateformes).
+Filtre d'Exclusion : Un service pour retirer de la liste les profils déjà ""likés"", ""refusés"" (unmatch) par l'utilisateur.","TEST-DISC-01
+Simule l'état de chargement, attend la résolution de la promesse de la base de données Firestore, puis valide l'affichage du premier profil trouvé.","V2
+https://github.com/Ycosta63/DuoQ/commit/d7b2b366eda6c5d8e6599e299d01bc4b93363bf5"
+US05,"En tant que utilisateur, je veux gg, ff go next ou GOAT un profil afin d'exprimer mon intérêt de façon nuancée.","Composant InteractionButtons / SwipeControls :
+Trois boutons distincts ou zones de swipe :
+🕹️ ""GG"" (Like standard), ⏭️ ""FF Go Next"" (Dislike), 🐐 ""GOAT"" (Super Like, avec limite d'utilisation quotidienne).
+Gestionnaire d'état : Met à jour la liste locale des profils suggérés (dépile le profil actuel et affiche le suivant) dès qu'une action est prise, pour une expérience fluide et sans rechargement.
+Service API (Client) : Fonction effectuant une requête POST vers le backend pour enregistrer l'interaction de l'utilisateur.
+
+Chaque interraction (swipe gauche ou droite ou super) est enregistrée dans la base de données de telle sorte à ce que l'application n'affiche plus le profil swipé sur la page de consultation des profils potentiels.
+En cas de GG ou GOAT mutuel entre deux utilisateurs, il y a match et ils peuvent discuter en message privé.","TEST-DISC-02
+Attend le chargement de l'interface de découverte, cible le bouton contenant le texte ""GG"", déclenche l'événement click et vérifie qu'une écriture en base de données Firestore a bien lieu pour enregistrer le swipe.","V2
+https://github.com/Ycosta63/DuoQ/commit/d7b2b366eda6c5d8e6599e299d01bc4b93363bf5"
+US06,"En tant que utilisateur, je veux être notifié d'un match mutuel afin de savoir quand une conversation peut débuter.","En cas de GG ou GOAT mutuel entre deux utilisateurs, il y a match et ils peuvent discuter en message privé.
+L'application envoie de manière asynchrone une notification sur l'ensemble de la page des deux utilisateurs au moment même où il y a match.
+Le match est enregistré dans la base de données.",Pas de test,"V4
+https://github.com/Ycosta63/DuoQ/commit/35d8f1188e311d5ffe9a49558c055081f68315da"
+US07,"En tant que utilisateur ayant obtenu un match, je veux voir le questionnaire complet de mon match afin de disposer  d'un sujet de conversation concret pour briser la glace.","Cliquer sur la page des matchs (Lobbies) permet de retrouver le profil de toutes les personnes avec qui on a match. Cliquer sur son profil affiche le questionnaire complet de cet utilisateur.
+Ces données sont privées s'il n'y a pas de match entre les deux utilisateurs.",Pas de test,"V4
+https://github.com/Ycosta63/DuoQ/commit/35d8f1188e311d5ffe9a49558c055081f68315da"
+US08,"En tant que utilisateur matché, je veux envoyer et recevoir des messages texte afin de communiquer avec mes matchs  directement sur la plateforme.","Lorsque je match avec un autre utilisateur, une page de discussion devient accessible dans la page qui répertorie ses matchs. On peut alors discuter de manière asynchrone avec l'autre utilisateur.
+La chatbox est protégé aux injections XSS.",Pas de test,"V3
+https://github.com/Ycosta63/DuoQ/commit/e14ad720aac4f4fd99b232cad3ec781e3ec6f833"
+US09,"En tant que utilisateur souhaitant accéder aux fonctionnalités explicites, je veux passer une vérification d'âge (18+) afin de garantir la conformité légale et la protection des mineurs.","Lors de la création du compte il faut cocher une case pour attester avoir 18 ans, si pas coché la soumission du formulaire est bloquée garentissant la conformité légale et la protection des mineurs.","TEST-AUTH-04
+Bascule sur la vue d'inscription, remplit les champs obligatoires mais ne coche pas la case de confirmation de majorité, puis tente de soumettre.","V5
+https://github.com/Ycosta63/DuoQ/commit/8007d01132029c929adb6a3cec5a6260e752f2bf"
+US10,"En tant que utilisateur, je veux consulter, modifier et supprimer mes données personnelles afin d'exercer mes droits RGPD à tout moment.","Dans la page de modification du profil, il y a un bouton de suppression du compte, affichage d'une modale ""Zone de danger"" : Une pop-up de confirmation pour la suppression du compte. Elle doit inclure une sécurité pour éviter toute suppression accidentelle (droit à l'oubli).
+
+Base de données :
+On adopte une stratégie de suppression en cascade : Une logique qui lors de la suppression du profil de l'utilisateur, va entrainer la suppression en cascade de ses préférences de match, et ses réponses aux questionnaires.
+Logique d'Anonymisation des Messages : Conformément au RGPD, il ne faut pas casser l'expérience des autres utilisateurs. Au lieu de supprimer les messages envoyés, on les ""anonymise"" (ex: modification de l'ID émetteur vers un compte deleted_user, changement du nom en ""Utilisateur supprimé"", et suppression de l'avatar), tout en supprimant le compte.",Pas de test,"V5
+https://github.com/Ycosta63/DuoQ/commit/8007d01132029c929adb6a3cec5a6260e752f2bf"
