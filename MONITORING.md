@@ -1,29 +1,29 @@
-# Monitoring with Grafana Cloud
+# Supervision avec Grafana Cloud
 
-This document explains the monitoring setup implemented in the application using Grafana Cloud. We have established both frontend real-user monitoring (RUM) and backend tracing.
+Ce document explique la configuration de la supervision implémentée dans l'application via Grafana Cloud. Nous avons mis en place à la fois la supervision frontend des utilisateurs réels (RUM) et le traçage backend.
 
-## 1. Frontend Monitoring (Grafana Faro)
+## 1. Supervision Frontend (Grafana Faro)
 
-We have integrated the **Grafana Faro Web SDK** to collect frontend telemetry, such as errors, web vitals, and user sessions.
+Nous avons intégré le **Grafana Faro Web SDK** pour collecter la télémétrie frontend, comme les erreurs, les web vitals et les sessions utilisateurs.
 
-- **Initialization**: The Faro receiver is initialized in `src/main.tsx`.
-- **Configuration**: It sends data to the Grafana Faro endpoint URL.
-- **Instrumentations**: It captures standard web instrumentations and includes `TracingInstrumentation` for end-to-end visibility of HTTP requests made by the frontend.
+- **Initialisation** : Le récepteur Faro est initialisé dans `src/main.tsx`.
+- **Configuration** : Il envoie les données à l'URL du endpoint Grafana Faro.
+- **Instrumentations** : Il capture les instrumentations web standards et inclut `TracingInstrumentation` pour une visibilité de bout en bout des requêtes HTTP effectuées par le frontend.
 
-## 2. Backend Tracing (OpenTelemetry)
+## 2. Traçage Backend (OpenTelemetry)
 
-We have set up **OpenTelemetry** on the backend to capture traces and export them to Grafana Cloud.
+Nous avons configuré **OpenTelemetry** sur le backend pour capturer les traces et les exporter vers Grafana Cloud.
 
-- **Initialization**: The setup is located in `instrument.ts`, which is imported at the very top of `server.ts`.
-- **Node SDK**: It uses `@opentelemetry/sdk-node` along with auto-instrumentations for Node.js (`@opentelemetry/auto-instrumentations-node`) to automatically capture traces from modules like Express and HTTP.
-- **Exporter**: Traces are exported over HTTP using `OTLPTraceExporter` (`@opentelemetry/exporter-trace-otlp-http`).
-- **Configuration**: The exporter relies on the standard OpenTelemetry environment variables (`OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS`) to authenticate and route the traces to your specific Grafana Cloud instance.
+- **Initialisation** : La configuration se trouve dans `instrument.ts`, qui est importé tout en haut de `server.ts`.
+- **Node SDK** : Il utilise `@opentelemetry/sdk-node` avec les auto-instrumentations pour Node.js (`@opentelemetry/auto-instrumentations-node`) pour capturer automatiquement les traces des modules comme Express et HTTP.
+- **Exportateur** : Les traces sont exportées via HTTP en utilisant `OTLPTraceExporter` (`@opentelemetry/exporter-trace-otlp-http`).
+- **Configuration** : L'exportateur s'appuie sur les variables d'environnement standards d'OpenTelemetry (`OTEL_EXPORTER_OTLP_ENDPOINT` et `OTEL_EXPORTER_OTLP_HEADERS`) pour s'authentifier et router les traces vers votre instance Grafana Cloud spécifique.
 
-## 3. Environment Variables Used
+## 3. Variables d'Environnement Utilisées
 
-To make this work securely, the following environment variables are utilized (and their structures are shown in `.env.example`):
+Pour que cela fonctionne de manière sécurisée, les variables d'environnement suivantes sont utilisées (et leurs structures sont indiquées dans `.env.example`) :
 
-- **`OTEL_EXPORTER_OTLP_ENDPOINT`**: The URL endpoint for the OpenTelemetry gateway (e.g., `https://otlp-gateway-prod-us-east-2.grafana.net/otlp`).
-- **`OTEL_EXPORTER_OTLP_HEADERS`**: The authorization token in the format `Authorization=Basic <base64_encoded_token>`. This ensures the backend traces are securely pushed to your Grafana Cloud OpenTelemetry endpoint.
+- **`OTEL_EXPORTER_OTLP_ENDPOINT`** : L'URL du endpoint pour la passerelle OpenTelemetry (par exemple, `https://otlp-gateway-prod-us-east-2.grafana.net/otlp`).
+- **`OTEL_EXPORTER_OTLP_HEADERS`** : Le jeton d'autorisation au format `Authorization=Basic <base64_encoded_token>`. Cela garantit que les traces backend sont poussées en toute sécurité vers votre endpoint OpenTelemetry Grafana Cloud.
 
-_Note: If `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS` are not set in your secret environment variables, the backend tracing initialization will simply be skipped to avoid runtime crashes._
+_Note : Si `OTEL_EXPORTER_OTLP_ENDPOINT` et `OTEL_EXPORTER_OTLP_HEADERS` ne sont pas définis dans vos variables d'environnement secrètes, l'initialisation du traçage backend sera simplement ignorée pour éviter les plantages lors de l'exécution._
