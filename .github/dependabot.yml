@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # Vérifie les dépendances dans package.json
+    directory: "/" # Emplacement du package.json (à la racine)
+    schedule:
+      interval: "weekly" # Fréquence des vérifications
+    labels:
+      - "dependencies" # Label ajouté automatiquement aux PRs
+    open-pull-requests-limit: 10 # Limite le nombre de PRs ouvertes simultanément

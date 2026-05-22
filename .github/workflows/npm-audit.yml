@@ -1,0 +1,26 @@
+name: Security Audit
+
+on:
+  schedule:
+    # Exécution tous les jours à 2h du matin
+    - cron: '0 2 * * *'
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Permet de déclencher l'action manuellement
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run npm audit (Informational Only)
+        # La clause '|| true' garantit que l'action n'échouera jamais,
+        # elle se contentera d'afficher les résultats dans les logs GitHub sans bloquer.
+        run: npm audit --audit-level=high || true
