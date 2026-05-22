@@ -55,7 +55,7 @@ export function Chat({ match, onBack }: ChatProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
-  const sendMessage = async (e: React.FormEvent) => {
+  const sendMessage = async (e: import('react').FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !user) return;
 

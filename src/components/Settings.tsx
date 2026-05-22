@@ -169,7 +169,7 @@ export function Settings({ onBack }: SettingsProps) {
     setGenerating(false);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: import('react').FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMsg('');
